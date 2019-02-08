@@ -1,5 +1,6 @@
 package com.example.levast.password;
 
+import android.arch.persistence.room.Room;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 
@@ -11,6 +12,8 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+
+import com.example.levast.password.Database.AppDataBase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
     public final static String KEY_NBR_FAILURE="KEY_NBR_FAILURE";
 
     public static User user;
-    public static SharedPreferences sharedPreferences;
+    //public static SharedPreferences sharedPreferences;
+    public AppDataBase RoomDB;
 
     private ContainerView containerView;
     private CustomView customView;
@@ -48,9 +52,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        RoomDB=AppDataBase.getDataBase(this);
         //on cree notre objet aui va contenir nos mot de passes
-        user =new User();
-        loadPassword();
+        user =RoomDB.userDao().loadFirstRow();
+        if(user==null)
+            user=new User();
+        //loadPassword();
 
         //we launch the container with all the pictures
         containerPagePictures=new Container<>(getAllDrawables());
@@ -74,30 +81,33 @@ public class MainActivity extends AppCompatActivity {
                 if(containerPagePictures.isDidLoop())
                 {
                     String toPrint;
-                    SharedPreferences.Editor editor=sharedPreferences.edit();
-                    int nbrFailure=sharedPreferences.getInt(KEY_NBR_FAILURE,0);
-                    int nbrSuccess=sharedPreferences.getInt(KEY_NBR_SUCCESS,0);
+                    //SharedPreferences.Editor editor=sharedPreferences.edit();
+                    //int nbrFailure=sharedPreferences.getInt(KEY_NBR_FAILURE,0);
+                    //int nbrSuccess=sharedPreferences.getInt(KEY_NBR_SUCCESS,0);
                     if(user.isSavingPassword())
                     {
 
-                        editor.putString(KEY_PASSWORD, user.getPasswordSaved());
+                        //editor.putString(KEY_PASSWORD, user.getPasswordSaved());
                         toPrint="New Password Saved";
                     }
                     else if(user.checkPassword())
                     {
                         toPrint="Correct Password";
-                        nbrSuccess++;
-                        editor.putInt(KEY_NBR_SUCCESS,nbrSuccess);
+                        user.addSuccess();
+                        //nbrSuccess++;
+                        //editor.putInt(KEY_NBRI_SUCCESS,nbrSuccess);
                     }
                     else
                     {
                         toPrint="Incorrect Password";
-                        nbrFailure++;
-                        editor.putInt(KEY_NBR_FAILURE,nbrFailure);
+                        user.addFailure();
+                        //nbrFailure++;
+                        //editor.putInt(KEY_NBR_FAILURE,nbrFailure);
                     }
-                    editor.apply();
+                    //editor.apply();
 
-                    toPrint+=" \nNbr Failure: "+nbrFailure+" \nNbr Success:"+nbrSuccess;
+                    RoomDB.userDao().insertAll(user);
+                    toPrint+=" \nNbr Failure: "+user.getNbrFailure()+" \nNbr Success:"+user.getNbrSuccess();
                     //we check or save the password and go to the home page
                     Toast.makeText(getApplicationContext(),toPrint,Toast.LENGTH_LONG).show();
                     containerView.printView(R.id.homePage);
@@ -176,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     //we get the password currently saved in sharedPreference
-    private void loadPassword()
+    /*private void loadPassword()
     {
         sharedPreferences=this.getSharedPreferences(KEY_SHARED_PREFERENCES,MODE_PRIVATE);
         String passwordRegistered=sharedPreferences.getString(KEY_PASSWORD,null);
@@ -185,6 +195,6 @@ public class MainActivity extends AppCompatActivity {
             user.setPasswordSaved(passwordRegistered);
         }
 
-    }
+    }*/
 
 }

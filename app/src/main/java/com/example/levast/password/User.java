@@ -20,7 +20,8 @@ public class User {
 
     //this list contains the password which allows the user to log in
     private String PasswordSaved;
-
+    private int nbrFailure;
+    private int nbrSuccess;
 
     /**
      * FIELD ONLY NEEDED AT RUN TIME
@@ -37,6 +38,8 @@ public class User {
         PasswordSaved ="";
         currentInput ="";
         isSavingPassword=true;
+        nbrFailure=0;
+        nbrSuccess=0;
     }
 
     /**
@@ -74,25 +77,31 @@ public class User {
         PasswordSaved ="";
     }
 
-    /*public String passwordInputEnd()
+    public int getNbrFailure() {
+        return nbrFailure;
+    }
+
+    public void setNbrFailure(int nbrFailure) {
+        this.nbrFailure = nbrFailure;
+    }
+
+    public int getNbrSuccess() {
+        return nbrSuccess;
+    }
+
+    public void setNbrSuccess(int nbrSuccess) {
+        this.nbrSuccess = nbrSuccess;
+    }
+
+    public void addSuccess()
     {
-        String print;
+        nbrSuccess++;
+    }
 
-        //if we were saving a new password
-        if(isSavingPassword)
-        {
-            print="New Password: "+PasswordSaved;
-        }
-        else
-        {
-            if(checkPassword())
-                print="Correct Password";
-            else
-                print="Incorrect Password";
-        }
-
-        return print;
-    }*/
+    public void addFailure()
+    {
+        nbrFailure++;
+    }
 
     public boolean isSavingPassword() {
         return isSavingPassword;
