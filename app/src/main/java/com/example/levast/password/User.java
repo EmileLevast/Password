@@ -1,25 +1,40 @@
 package com.example.levast.password;
 
-import java.util.ArrayList;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 
 /**
  * Created by Levast on 05.02.2019.
  */
 
-public class UserPassword<T> {
+@Entity
+public class User {
+
+    /**
+     * DATA TO SAVE IN THE DATABASE
+     */
+    @PrimaryKey(autoGenerate = true)
+    public int id;
 
     //this list contains the password which allows the user to log in
-    private String saved;
+    private String PasswordSaved;
 
+
+    /**
+     * FIELD ONLY NEEDED AT RUN TIME
+     */
+    @Ignore
     //contains the input data of user who wants to log in
     private String currentInput;
 
-    //when true we register the new informations in "saved" array
+    @Ignore
+    //when true we register the new informations in "PasswordSaved" array
     private boolean isSavingPassword;
 
-    public UserPassword() {
-        saved ="";
+    public User() {
+        PasswordSaved ="";
         currentInput ="";
         isSavingPassword=true;
     }
@@ -29,18 +44,18 @@ public class UserPassword<T> {
      */
     public boolean checkPassword()
     {
-        return saved.length()== currentInput.length() &&
-                saved.equals(currentInput);
+        return PasswordSaved.length()== currentInput.length() &&
+                PasswordSaved.equals(currentInput);
     }
 
-    public void setSaved(String saved) {
-        this.saved = saved;
+    public void setPasswordSaved(String passwordSaved) {
+        this.PasswordSaved = passwordSaved;
     }
 
-    public void addSymbolToPassword(T symbol)
+    public void addSymbolToPassword(Integer symbol)
     {
         if(isSavingPassword)
-            saved+=symbol.toString();
+            PasswordSaved +=symbol.toString();
         else
             currentInput+=symbol.toString();
     }
@@ -56,7 +71,7 @@ public class UserPassword<T> {
     public void register()
     {
         isSavingPassword=true;
-        saved="";
+        PasswordSaved ="";
     }
 
     /*public String passwordInputEnd()
@@ -66,7 +81,7 @@ public class UserPassword<T> {
         //if we were saving a new password
         if(isSavingPassword)
         {
-            print="New Password: "+saved;
+            print="New Password: "+PasswordSaved;
         }
         else
         {
@@ -83,7 +98,7 @@ public class UserPassword<T> {
         return isSavingPassword;
     }
 
-    public String getSavedPassword() {
-        return saved;
+    public String getPasswordSaved() {
+        return PasswordSaved;
     }
 }

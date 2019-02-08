@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -20,7 +19,7 @@ import java.util.LinkedList;
 public class MainActivity extends AppCompatActivity {
 
     public final static int NBR_COLUMN=4;
-    public final static int NBR_LINE=8;
+    public final static int NBR_LINE=6;
     public final static int NBR_PAGE=4;
 
     public final static String KEY_SHARED_PREFERENCES="KEY_PASSWORD";// for the sharedPreferences
@@ -28,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     public final static String KEY_NBR_SUCCESS="KEY_NBR_SUCCES";
     public final static String KEY_NBR_FAILURE="KEY_NBR_FAILURE";
 
-    public static UserPassword<Integer> userPassword;
+    public static User user;
     public static SharedPreferences sharedPreferences;
 
     private ContainerView containerView;
@@ -50,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //on cree notre objet aui va contenir nos mot de passes
-        userPassword=new UserPassword<>();
+        user =new User();
         loadPassword();
 
         //we launch the container with all the pictures
@@ -69,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                userPassword.addSymbolToPassword(position);
+                user.addSymbolToPassword(position);
 
                 //if we already have seen all the pages
                 if(containerPagePictures.isDidLoop())
@@ -78,13 +77,13 @@ public class MainActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor=sharedPreferences.edit();
                     int nbrFailure=sharedPreferences.getInt(KEY_NBR_FAILURE,0);
                     int nbrSuccess=sharedPreferences.getInt(KEY_NBR_SUCCESS,0);
-                    if(userPassword.isSavingPassword())
+                    if(user.isSavingPassword())
                     {
 
-                        editor.putString(KEY_PASSWORD,userPassword.getSavedPassword());
+                        editor.putString(KEY_PASSWORD, user.getPasswordSaved());
                         toPrint="New Password Saved";
                     }
-                    else if(userPassword.checkPassword())
+                    else if(user.checkPassword())
                     {
                         toPrint="Correct Password";
                         nbrSuccess++;
@@ -125,14 +124,14 @@ public class MainActivity extends AppCompatActivity {
     public void LogInClick(View v)
     {
         containerView.printView(idPageImage);
-        userPassword.logIn();
+        user.logIn();
         setCustomView();
     }
 
     public void RegisterClick(View v)
     {
         containerView.printView(idPageImage);
-        userPassword.register();
+        user.register();
         setCustomView();
     }
 
@@ -183,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
         String passwordRegistered=sharedPreferences.getString(KEY_PASSWORD,null);
         if(passwordRegistered!=null)
         {
-            userPassword.setSaved(passwordRegistered);
+            user.setPasswordSaved(passwordRegistered);
         }
 
     }
