@@ -19,7 +19,7 @@ import java.util.List;
 public interface UserDao {
 
     @Query("SELECT * FROM user")
-    List<User> getAll();
+    List<User> getAll();//return a list with all the users currently registered in the database
 
     @Query("SELECT * FROM user WHERE id IN (:userIds)")
     List<User> loadAllByIds(int[] userIds);

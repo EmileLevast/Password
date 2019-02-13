@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         customView=new CustomView(this, Arrays.asList(containerPagePictures.getCurrentItem()));
 
         //grid view to display the images in order
-        gridView=(GridView) findViewById(R.id.gridView);
+        gridView=(GridView)findViewById(R.id.gridView);
         gridView.setNumColumns(NBR_COLUMN);
         gridView.setAdapter(customView);
 

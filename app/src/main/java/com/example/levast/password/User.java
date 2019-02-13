@@ -1,6 +1,4 @@
 package com.example.levast.password;
-
-
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
@@ -19,7 +17,7 @@ public class User {
     public int id;
 
     //this list contains the password which allows the user to log in
-    private String PasswordSaved;
+    private String passwordSaved;
     private int nbrFailure;
     private int nbrSuccess;
 
@@ -31,34 +29,38 @@ public class User {
     private String currentInput;
 
     @Ignore
-    //when true we register the new informations in "PasswordSaved" array
+    //when true we register the new informations in "passwordSaved" array
     private boolean isSavingPassword;
 
     public User() {
-        PasswordSaved ="";
+        passwordSaved ="";
         currentInput ="";
         isSavingPassword=true;
         nbrFailure=0;
         nbrSuccess=0;
     }
 
-    /**
+
+
+
+
+/**
      * @return true if the two passwords are equals
      */
     public boolean checkPassword()
     {
-        return PasswordSaved.length()== currentInput.length() &&
-                PasswordSaved.equals(currentInput);
+        return passwordSaved.length()== currentInput.length() &&
+                passwordSaved.equals(currentInput);
     }
 
     public void setPasswordSaved(String passwordSaved) {
-        this.PasswordSaved = passwordSaved;
+        this.passwordSaved = passwordSaved;
     }
 
     public void addSymbolToPassword(Integer symbol)
     {
         if(isSavingPassword)
-            PasswordSaved +=symbol.toString();
+            passwordSaved +=symbol.toString();
         else
             currentInput+=symbol.toString();
     }
@@ -74,7 +76,7 @@ public class User {
     public void register()
     {
         isSavingPassword=true;
-        PasswordSaved ="";
+        passwordSaved ="";
     }
 
     public int getNbrFailure() {
@@ -108,6 +110,36 @@ public class User {
     }
 
     public String getPasswordSaved() {
-        return PasswordSaved;
+        return passwordSaved;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

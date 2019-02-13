@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ public class CustomView extends ArrayAdapter<Integer> {
         {
             listItem = LayoutInflater.from(context).inflate(R.layout.layoutadapter,parent,false);
             ImageView imageView=(ImageView) listItem.findViewById(R.id.imageView);
+            TextView textLegend=listItem.findViewById(R.id.textLegend);
 
             sizeImg=(MainActivity.getScreenWidth()-2*marginBetweenPictures*MainActivity.NBR_COLUMN)/MainActivity.NBR_COLUMN;
             LinearLayout.LayoutParams param=new LinearLayout.LayoutParams(sizeImg,sizeImg);
@@ -59,6 +61,7 @@ public class CustomView extends ArrayAdapter<Integer> {
             imageView.setLayoutParams(param);
 
             viewHolder.setImageView(imageView);
+            viewHolder.setTextLegend(textLegend);
             listItem.setTag(viewHolder);
         }else
         {
@@ -74,6 +77,7 @@ public class CustomView extends ArrayAdapter<Integer> {
 
         //viewHolder.getImageView().setImageResource(currentImg);
         viewHolder.getImageView().setImageBitmap(decodeSampledBitmapFromResource(this.getContext().getResources(),currentImg,sizeImg,sizeImg));
+        viewHolder.getTextLegend().setText("pos:"+position );
 
         return listItem;
     }
@@ -83,9 +87,18 @@ public class CustomView extends ArrayAdapter<Integer> {
         this.img.addAll(Arrays.asList(img));
     }
 
-    //anonymous class to save view
+    // class to save view
     public class ViewHolder{
         private ImageView imageView;
+        private TextView textLegend;
+
+        public TextView getTextLegend() {
+            return textLegend;
+        }
+
+        public void setTextLegend(TextView textLegend) {
+            this.textLegend = textLegend;
+        }
 
         public ImageView getImageView() {
             return imageView;
