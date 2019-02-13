@@ -16,7 +16,7 @@ import java.util.List;
  */
 
 @Dao
-public interface UserDao {
+public interface UserDao extends genericDao<User> {
 
     @Query("SELECT * FROM user")
     List<User> getAll();//return a list with all the users currently registered in the database
@@ -28,13 +28,6 @@ public interface UserDao {
     @Query("SELECT * FROM user LIMIT 1")
     User loadFirstRow();
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(User... users);
 
-    @Delete
-    void delete(User user);
-
-    @Update
-    void updateUsers(User... users);
 
 }

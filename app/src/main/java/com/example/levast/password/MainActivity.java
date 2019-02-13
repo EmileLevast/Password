@@ -22,13 +22,13 @@ import java.util.LinkedList;
 public class MainActivity extends AppCompatActivity {
 
     public final static int NBR_COLUMN=4;
-    public final static int NBR_LINE=6;
+    public final static int NBR_LINE=5;
     public final static int NBR_PAGE=4;
 
-    public final static String KEY_SHARED_PREFERENCES="KEY_PASSWORD";// for the sharedPreferences
+    /*public final static String KEY_SHARED_PREFERENCES="KEY_PASSWORD";// for the sharedPreferences
     public final static String KEY_PASSWORD="KEY_PASSWORD";// for the password in sharedPreferences
     public final static String KEY_NBR_SUCCESS="KEY_NBR_SUCCES";
-    public final static String KEY_NBR_FAILURE="KEY_NBR_FAILURE";
+    public final static String KEY_NBR_FAILURE="KEY_NBR_FAILURE";*/
 
     public static User user;
     //public static SharedPreferences sharedPreferences;

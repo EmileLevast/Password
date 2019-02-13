@@ -3,6 +3,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.util.ArrayList;
+
 /**
  * Created by Levast on 05.02.2019.
  */
@@ -17,7 +19,7 @@ public class User {
     public int id;
 
     //this list contains the password which allows the user to log in
-    private String passwordSaved;
+    private ArrayList<Integer> passwordSaved;
     private int nbrFailure;
     private int nbrSuccess;
 
@@ -26,15 +28,15 @@ public class User {
      */
     @Ignore
     //contains the input data of user who wants to log in
-    private String currentInput;
+    private ArrayList<Integer> currentInput;
 
     @Ignore
     //when true we register the new informations in "passwordSaved" array
     private boolean isSavingPassword;
 
     public User() {
-        passwordSaved ="";
-        currentInput ="";
+        passwordSaved =new ArrayList<>(0);
+        currentInput =new ArrayList<>(0);
         isSavingPassword=true;
         nbrFailure=0;
         nbrSuccess=0;
@@ -49,20 +51,20 @@ public class User {
      */
     public boolean checkPassword()
     {
-        return passwordSaved.length()== currentInput.length() &&
+        return passwordSaved.size()== currentInput.size() &&
                 passwordSaved.equals(currentInput);
     }
 
-    public void setPasswordSaved(String passwordSaved) {
+    public void setPasswordSaved(ArrayList<Integer> passwordSaved) {
         this.passwordSaved = passwordSaved;
     }
 
     public void addSymbolToPassword(Integer symbol)
     {
         if(isSavingPassword)
-            passwordSaved +=symbol.toString();
+            passwordSaved.add(symbol);
         else
-            currentInput+=symbol.toString();
+            currentInput.add(symbol);
     }
 
     public void logIn()
@@ -70,13 +72,13 @@ public class User {
         isSavingPassword=false;
 
         //we are going to enter a new password so we clear the previous data
-        currentInput="";
+        currentInput.clear();
     }
 
     public void register()
     {
         isSavingPassword=true;
-        passwordSaved ="";
+        passwordSaved.clear();
     }
 
     public int getNbrFailure() {
@@ -109,7 +111,7 @@ public class User {
         return isSavingPassword;
     }
 
-    public String getPasswordSaved() {
+    public ArrayList<Integer> getPasswordSaved() {
         return passwordSaved;
     }
 }
