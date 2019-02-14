@@ -2,6 +2,7 @@ package com.example.levast.password;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Levast on 05.02.2019.
@@ -16,8 +17,15 @@ public class Container <T>{
     //work only for indexup
     boolean didLoop;
 
-    public Container(T... item) {
+    /*public Container(T... item) {
         list=new ArrayList<>(Arrays.asList(item));
+        index=0;
+        init();
+    }*/
+
+    public Container(List<T> item)
+    {
+        list=new ArrayList<>(item);
         index=0;
         init();
     }

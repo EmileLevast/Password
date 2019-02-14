@@ -16,6 +16,11 @@ public class ImageLegend {
     private int idImage;
     private String legend;
 
+    public ImageLegend(int idImage, String legend) {
+        this.idImage = idImage;
+        this.legend = legend;
+    }
+
     public int getIdImage() {
         return idImage;
     }

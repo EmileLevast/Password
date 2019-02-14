@@ -1,7 +1,5 @@
 package com.example.levast.password;
 
-import android.arch.persistence.room.Room;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 
 import android.support.v7.app.AppCompatActivity;
@@ -18,12 +16,13 @@ import com.example.levast.password.Database.AppDataBase;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     public final static int NBR_COLUMN=4;
     public final static int NBR_LINE=5;
-    public final static int NBR_PAGE=4;
+    public final static int NBR_PAGE=1;
 
     /*public final static String KEY_SHARED_PREFERENCES="KEY_PASSWORD";// for the sharedPreferences
     public final static String KEY_PASSWORD="KEY_PASSWORD";// for the password in sharedPreferences
@@ -32,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static User user;
     //public static SharedPreferences sharedPreferences;
-    public AppDataBase RoomDB;
+    public AppDataBase roomDB;
 
     private ContainerView containerView;
     private CustomView customView;
@@ -40,8 +39,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private Container<Integer[]> containerPagePictures;//=new Container<>(listPicture);
-
+    //private Container<Integer[]> containerPagePictures;
+    private Container<List<ImageLegend>> containerPagePictures;
 
 
     private int idHomePage;
@@ -52,22 +51,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RoomDB=AppDataBase.getDataBase(this);
+        roomDB =AppDataBase.getDataBase(this);
         //on cree notre objet aui va contenir nos mot de passes
-        user =RoomDB.userDao().loadFirstRow();
+        user = roomDB.userDao().loadFirstRow();
         if(user==null)
             user=new User();
         //loadPassword();
 
         //we launch the container with all the pictures
-        containerPagePictures=new Container<>(getAllDrawables());
-
+        //containerPagePictures=new Container<>(getAllDrawables());
+        containerPagePictures=new Container<>(loadAllImagefromDb());
 
         //our custom view to display the image in a imageView
-        customView=new CustomView(this, Arrays.asList(containerPagePictures.getCurrentItem()));
+        customView=new CustomView(this, containerPagePictures.getCurrentItem());
 
         //grid view to display the images in order
-        gridView=(GridView)findViewById(R.id.gridView);
+        gridView=findViewById(R.id.gridView);
         gridView.setNumColumns(NBR_COLUMN);
         gridView.setAdapter(customView);
 
@@ -106,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     //editor.apply();
 
-                    RoomDB.userDao().insertAll(user);
+                    roomDB.userDao().insertAll(user);
                     toPrint+=" \nNbr Failure: "+user.getNbrFailure()+" \nNbr Success:"+user.getNbrSuccess();
                     //we check or save the password and go to the home page
                     Toast.makeText(getApplicationContext(),toPrint,Toast.LENGTH_LONG).show();
@@ -185,16 +184,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //we get the password currently saved in sharedPreference
-    /*private void loadPassword()
+    private ArrayList<List<ImageLegend>> loadAllImagefromDb()
     {
-        sharedPreferences=this.getSharedPreferences(KEY_SHARED_PREFERENCES,MODE_PRIVATE);
-        String passwordRegistered=sharedPreferences.getString(KEY_PASSWORD,null);
-        if(passwordRegistered!=null)
-        {
-            user.setPasswordSaved(passwordRegistered);
-        }
+        ArrayList<List<ImageLegend>> listPage=new ArrayList<>(0);
+        List<ImageLegend> tempo=roomDB.imageLegendDao().getAll();
+        listPage.add(tempo);
 
-    }*/
+        return listPage;
+    }
 
 }

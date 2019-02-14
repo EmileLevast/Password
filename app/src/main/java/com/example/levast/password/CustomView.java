@@ -17,6 +17,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
+import com.example.levast.password.Database.AppDataBase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,15 +28,15 @@ import java.util.List;
  */
 
 public class CustomView extends ArrayAdapter<Integer> {
-    private ArrayList<Integer> img;
+    private ArrayList<ImageLegend> img;
     private Context context;
 
     private final int marginBetweenPictures =10;//pixel
     private static final String TAG ="CustomVIew";
     private int sizeImg;
 
-    public CustomView(@NonNull Context context, List<Integer> img) {
-        super(context, 0, img);
+    public CustomView(@NonNull Context context, List<ImageLegend> img) {
+        super(context,0, AppDataBase.getDataBase(context).imageLegendDao().getAllId());
         this.img=new ArrayList<>(img);
         this.context=context;
         sizeImg=0;
@@ -70,21 +72,21 @@ public class CustomView extends ArrayAdapter<Integer> {
         }
 
         //we get the currently image selected
-        int currentImg=img.get(position);
+        ImageLegend currentImg=img.get(position);
 
         if(viewHolder.getImageView().getDrawable()!=null)
             ((BitmapDrawable)viewHolder.getImageView().getDrawable()).getBitmap().recycle();
 
         //viewHolder.getImageView().setImageResource(currentImg);
-        viewHolder.getImageView().setImageBitmap(decodeSampledBitmapFromResource(this.getContext().getResources(),currentImg,sizeImg,sizeImg));
-        viewHolder.getTextLegend().setText("pos:"+position );
+        viewHolder.getImageView().setImageBitmap(decodeSampledBitmapFromResource(this.getContext().getResources(),currentImg.getIdImage(),sizeImg,sizeImg));
+        viewHolder.getTextLegend().setText(currentImg.getLegend() );
 
         return listItem;
     }
 
-    public void setImg(Integer... img) {
+    public void setImg(List<ImageLegend> img) {
         this.img.clear();
-        this.img.addAll(Arrays.asList(img));
+        this.img.addAll(img);
     }
 
     // class to save view
