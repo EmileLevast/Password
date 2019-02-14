@@ -22,7 +22,7 @@ import java.util.concurrent.Executors;
  */
 
 @TypeConverters({Converter.class})
-@Database(entities = {User.class, ImageLegend.class}, version = 5)
+@Database(entities = {User.class, ImageLegend.class}, version = 6)
 public abstract class AppDataBase extends RoomDatabase {
 
     private static AppDataBase INSTANCE;
@@ -35,9 +35,6 @@ public abstract class AppDataBase extends RoomDatabase {
             INSTANCE= buildDataBase(context);
 
         }
-
-
-
         return INSTANCE;
     }
 
@@ -65,29 +62,49 @@ public abstract class AppDataBase extends RoomDatabase {
     private static void prepopulateData(final Context context)
     {
         getDataBase(context).imageLegendDao().insertAll(
-
                 //Subject
-                new ImageLegend(R.drawable.auto,"Auto"),
-                new ImageLegend(R.drawable.ball,"Ball"),
-                new ImageLegend(R.drawable.bike,"Bike"),
-                new ImageLegend(R.drawable.bird,"Bird"),
-                new ImageLegend(R.drawable.boy,"Boy"),
-                new ImageLegend(R.drawable.bug,"Bug"),
-                new ImageLegend(R.drawable.builder,"Builder"),
-                new ImageLegend(R.drawable.bush,"Bush"),
-                new ImageLegend(R.drawable.cat,"Cat"),
-                new ImageLegend(R.drawable.cow,"Cow"),
-                new ImageLegend(R.drawable.dog,"dog"),
-                new ImageLegend(R.drawable.fireman,"Fireman"),
-                new ImageLegend(R.drawable.girl,"Girl"),
-                new ImageLegend(R.drawable.horse,"Horse"),
-                new ImageLegend(R.drawable.man,"Man"),
-                new ImageLegend(R.drawable.moto,"Moto"),
-                new ImageLegend(R.drawable.policeman,"Policeman"),
-                new ImageLegend(R.drawable.sheep,"Sheep"),
-                new ImageLegend(R.drawable.tree,"Tree"),
-                new ImageLegend(R.drawable.truck,"Truck")
+                new ImageLegend(R.drawable.auto,"Auto", ImageLegend.SUBJECT),
+                new ImageLegend(R.drawable.ball,"Ball", ImageLegend.SUBJECT),
+                new ImageLegend(R.drawable.bike,"Bike", ImageLegend.SUBJECT),
+                new ImageLegend(R.drawable.bird,"Bird", ImageLegend.SUBJECT),
+                new ImageLegend(R.drawable.boy,"Boy", ImageLegend.SUBJECT),
+                new ImageLegend(R.drawable.bug,"Bug", ImageLegend.SUBJECT),
+                new ImageLegend(R.drawable.builder,"Builder", ImageLegend.SUBJECT),
+                new ImageLegend(R.drawable.bush,"Bush", ImageLegend.SUBJECT),
+                new ImageLegend(R.drawable.cat,"Cat", ImageLegend.SUBJECT),
+                new ImageLegend(R.drawable.cow,"Cow", ImageLegend.SUBJECT),
+                new ImageLegend(R.drawable.dog,"dog", ImageLegend.SUBJECT),
+                new ImageLegend(R.drawable.fireman,"Fireman", ImageLegend.SUBJECT),
+                new ImageLegend(R.drawable.girl,"Girl", ImageLegend.SUBJECT),
+                new ImageLegend(R.drawable.horse,"Horse", ImageLegend.SUBJECT),
+                new ImageLegend(R.drawable.man,"Man", ImageLegend.SUBJECT),
+                new ImageLegend(R.drawable.moto,"Moto", ImageLegend.SUBJECT),
+                new ImageLegend(R.drawable.policeman,"Policeman", ImageLegend.SUBJECT),
+                new ImageLegend(R.drawable.sheep,"Sheep", ImageLegend.SUBJECT),
+                new ImageLegend(R.drawable.tree,"Tree", ImageLegend.SUBJECT),
+                new ImageLegend(R.drawable.truck,"Truck", ImageLegend.SUBJECT),
 
+                //FORM
+                new ImageLegend(R.drawable.big,"Big", ImageLegend.FORM),
+                new ImageLegend(R.drawable.broad,"Broad", ImageLegend.FORM),
+                new ImageLegend(R.drawable.clean,"Clean", ImageLegend.FORM),
+                new ImageLegend(R.drawable.colourful,"CoulourFul", ImageLegend.FORM),
+                new ImageLegend(R.drawable.dirty,"Dirty", ImageLegend.FORM),
+                new ImageLegend(R.drawable.flat,"Flat", ImageLegend.FORM),
+                new ImageLegend(R.drawable.grey,"Grey", ImageLegend.FORM),
+                new ImageLegend(R.drawable.high,"High", ImageLegend.FORM),
+                new ImageLegend(R.drawable.huge,"Huge", ImageLegend.FORM),
+                new ImageLegend(R.drawable.inclined,"Inclined", ImageLegend.FORM),
+                new ImageLegend(R.drawable.little,"Little", ImageLegend.FORM),
+                new ImageLegend(R.drawable.verylong,"Long", ImageLegend.FORM),
+                new ImageLegend(R.drawable.square,"Square", ImageLegend.FORM),
+                new ImageLegend(R.drawable.minuscule,"Tiny", ImageLegend.FORM),
+                new ImageLegend(R.drawable.newtechnologies,"New", ImageLegend.FORM),
+                new ImageLegend(R.drawable.old,"Old", ImageLegend.FORM),
+                new ImageLegend(R.drawable.oval,"Oval", ImageLegend.FORM),
+                new ImageLegend(R.drawable.pink,"Pink", ImageLegend.FORM),
+                new ImageLegend(R.drawable.round,"Round", ImageLegend.FORM),
+                new ImageLegend(R.drawable.purple,"Purple", ImageLegend.FORM)
         );
     }
 

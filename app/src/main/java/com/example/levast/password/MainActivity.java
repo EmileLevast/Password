@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     public final static int NBR_COLUMN=4;
     public final static int NBR_LINE=5;
-    public final static int NBR_PAGE=1;
+    public final static int NBR_PAGE=2;
 
     /*public final static String KEY_SHARED_PREFERENCES="KEY_PASSWORD";// for the sharedPreferences
     public final static String KEY_PASSWORD="KEY_PASSWORD";// for the password in sharedPreferences
@@ -187,8 +187,14 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<List<ImageLegend>> loadAllImagefromDb()
     {
         ArrayList<List<ImageLegend>> listPage=new ArrayList<>(0);
-        List<ImageLegend> tempo=roomDB.imageLegendDao().getAll();
-        listPage.add(tempo);
+
+        listPage.add(roomDB.imageLegendDao().getAllImageTheme(ImageLegend.SUBJECT));
+        listPage.add(roomDB.imageLegendDao().getAllImageTheme(ImageLegend.FORM));
+        //listPage.add(roomDB.imageLegendDao().getAllImageTheme(ImageLegend.VERB));
+        //listPage.add(roomDB.imageLegendDao().getAllImageTheme(ImageLegend.PLACE));
+        //listPage.add(roomDB.imageLegendDao().getAllImageTheme(ImageLegend.TIME));
+
+
 
         return listPage;
     }

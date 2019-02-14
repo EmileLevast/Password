@@ -15,10 +15,27 @@ public class ImageLegend {
 
     private int idImage;
     private String legend;
+    private String theme;
 
-    public ImageLegend(int idImage, String legend) {
+
+    public final static String SUBJECT="SUBJECT";
+    public final static String VERB="VERB";
+    public final static String PLACE="PLACE";
+    public final static String TIME="TIME";
+    public final static String FORM="FORM";
+
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
+    }
+
+    public ImageLegend(int idImage, String legend,String theme) {
         this.idImage = idImage;
         this.legend = legend;
+        this.theme=theme;
     }
 
     public int getIdImage() {

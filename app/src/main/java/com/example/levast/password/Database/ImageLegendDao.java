@@ -18,4 +18,7 @@ public interface ImageLegendDao extends genericDao<ImageLegend>{
 
     @Query("SELECT idImage FROM ImageLegend")
     List<Integer> getAllId();
+
+    @Query("SELECT * FROM ImageLegend WHERE theme = (:theme)")
+    List<ImageLegend> getAllImageTheme(String theme);
 }
