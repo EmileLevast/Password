@@ -104,8 +104,79 @@ public abstract class AppDataBase extends RoomDatabase {
                 new ImageLegend(R.drawable.oval,"Oval", ImageLegend.FORM),
                 new ImageLegend(R.drawable.pink,"Pink", ImageLegend.FORM),
                 new ImageLegend(R.drawable.round,"Round", ImageLegend.FORM),
-                new ImageLegend(R.drawable.purple,"Purple", ImageLegend.FORM)
-        );
+                new ImageLegend(R.drawable.purple,"Purple", ImageLegend.FORM),
+
+
+                //VERB
+                new ImageLegend(R.drawable.climb,"Climb", ImageLegend.VERB),
+                new ImageLegend(R.drawable.dance,"Dance", ImageLegend.VERB),
+                new ImageLegend(R.drawable.dream,"Dream", ImageLegend.VERB),
+                new ImageLegend(R.drawable.drink,"Drink", ImageLegend.VERB),
+                new ImageLegend(R.drawable.eat,"Eat", ImageLegend.VERB),
+                new ImageLegend(R.drawable.fall,"Fall", ImageLegend.VERB),
+                new ImageLegend(R.drawable.go,"go", ImageLegend.VERB),
+                new ImageLegend(R.drawable.itsmells,"It smells", ImageLegend.VERB),
+                new ImageLegend(R.drawable.jump,"Jump", ImageLegend.VERB),
+                new ImageLegend(R.drawable.lie,"Lie", ImageLegend.VERB),
+                new ImageLegend(R.drawable.race,"Race", ImageLegend.VERB),
+                new ImageLegend(R.drawable.roll,"Roll", ImageLegend.VERB),
+                new ImageLegend(R.drawable.run,"Run", ImageLegend.VERB),
+                new ImageLegend(R.drawable.show,"Show", ImageLegend.VERB),
+                new ImageLegend(R.drawable.sleep,"Sleep", ImageLegend.VERB),
+                new ImageLegend(R.drawable.smell,"smell", ImageLegend.VERB),
+                new ImageLegend(R.drawable.stand,"Stand", ImageLegend.VERB),
+                new ImageLegend(R.drawable.stay,"Stay", ImageLegend.VERB),
+                new ImageLegend(R.drawable.descend,"Descend", ImageLegend.VERB),
+                new ImageLegend(R.drawable.sprint,"Sprint", ImageLegend.VERB),
+
+
+                //PLACE
+                new ImageLegend(R.drawable.beach,"Beach", ImageLegend.PLACE),
+                new ImageLegend(R.drawable.castle,"Castle", ImageLegend.PLACE),
+                new ImageLegend(R.drawable.earth,"Earth", ImageLegend.PLACE),
+                new ImageLegend(R.drawable.familyhouse,"Field", ImageLegend.PLACE),
+                new ImageLegend(R.drawable.field,"Field", ImageLegend.PLACE),
+                new ImageLegend(R.drawable.footpath,"Footpath", ImageLegend.PLACE),
+                new ImageLegend(R.drawable.forest,"Forest", ImageLegend.PLACE),
+                new ImageLegend(R.drawable.garden,"Garden", ImageLegend.PLACE),
+                new ImageLegend(R.drawable.heaven,"Heaven", ImageLegend.PLACE),
+                new ImageLegend(R.drawable.highway,"Highway", ImageLegend.PLACE),
+                new ImageLegend(R.drawable.lake,"Lake", ImageLegend.PLACE),
+                new ImageLegend(R.drawable.pasture,"Pasture", ImageLegend.PLACE),
+                new ImageLegend(R.drawable.pond,"Pond", ImageLegend.PLACE),
+                new ImageLegend(R.drawable.river,"River", ImageLegend.PLACE),
+                new ImageLegend(R.drawable.sea,"Sea", ImageLegend.PLACE),
+                new ImageLegend(R.drawable.street,"Street", ImageLegend.PLACE),
+                new ImageLegend(R.drawable.supermarket,"Supermarket", ImageLegend.PLACE),
+                new ImageLegend(R.drawable.trainstation,"TrainStation", ImageLegend.PLACE),
+                new ImageLegend(R.drawable.villa,"Villa", ImageLegend.PLACE),
+                new ImageLegend(R.drawable.water,"Water", ImageLegend.PLACE),
+
+                new ImageLegend(R.drawable.afternoon,"Afternoon", ImageLegend.TIME),
+                new ImageLegend(R.drawable.always,"Always", ImageLegend.TIME),
+                new ImageLegend(R.drawable.autumn,"Autumn", ImageLegend.TIME),
+                new ImageLegend(R.drawable.evening,"Evening", ImageLegend.TIME),
+                new ImageLegend(R.drawable.fog,"Fog", ImageLegend.TIME),
+                new ImageLegend(R.drawable.midday,"Midday", ImageLegend.TIME),
+                new ImageLegend(R.drawable.morning,"Morning", ImageLegend.TIME),
+                new ImageLegend(R.drawable.never,"Never", ImageLegend.TIME),
+                new ImageLegend(R.drawable.night,"Night", ImageLegend.TIME),
+                new ImageLegend(R.drawable.often,"Often", ImageLegend.TIME),
+                new ImageLegend(R.drawable.rain,"Rain", ImageLegend.TIME),
+                new ImageLegend(R.drawable.rare,"Rare", ImageLegend.TIME),
+                new ImageLegend(R.drawable.snow,"Snow", ImageLegend.TIME),
+                new ImageLegend(R.drawable.sometimes,"Sometimes", ImageLegend.TIME),
+                new ImageLegend(R.drawable.storm,"Storm", ImageLegend.TIME),
+                new ImageLegend(R.drawable.summer,"Summer", ImageLegend.TIME),
+                new ImageLegend(R.drawable.sunshine,"Sunshine", ImageLegend.TIME),
+                new ImageLegend(R.drawable.weekend,"Week-end", ImageLegend.TIME),
+                new ImageLegend(R.drawable.wind,"Wind", ImageLegend.TIME),
+                new ImageLegend(R.drawable.winter,"Winter", ImageLegend.TIME)
+
+
+                );
+
+
     }
 
     public abstract UserDao userDao();

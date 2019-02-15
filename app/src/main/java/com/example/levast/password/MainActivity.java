@@ -190,9 +190,9 @@ public class MainActivity extends AppCompatActivity {
 
         listPage.add(roomDB.imageLegendDao().getAllImageTheme(ImageLegend.SUBJECT));
         listPage.add(roomDB.imageLegendDao().getAllImageTheme(ImageLegend.FORM));
-        //listPage.add(roomDB.imageLegendDao().getAllImageTheme(ImageLegend.VERB));
-        //listPage.add(roomDB.imageLegendDao().getAllImageTheme(ImageLegend.PLACE));
-        //listPage.add(roomDB.imageLegendDao().getAllImageTheme(ImageLegend.TIME));
+        listPage.add(roomDB.imageLegendDao().getAllImageTheme(ImageLegend.VERB));
+        listPage.add(roomDB.imageLegendDao().getAllImageTheme(ImageLegend.PLACE));
+        listPage.add(roomDB.imageLegendDao().getAllImageTheme(ImageLegend.TIME));
 
 
 

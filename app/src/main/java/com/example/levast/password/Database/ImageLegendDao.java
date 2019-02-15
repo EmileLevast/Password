@@ -16,8 +16,8 @@ public interface ImageLegendDao extends genericDao<ImageLegend>{
     @Query("SELECT * FROM ImageLegend")
     List<ImageLegend> getAll();//return a list with all the users currently registered in the database
 
-    @Query("SELECT idImage FROM ImageLegend")
-    List<Integer> getAllId();
+    @Query("SELECT idImage FROM ImageLegend WHERE theme = (:theme)")
+    List<Integer> getAllIdFromTheme(String theme);
 
     @Query("SELECT * FROM ImageLegend WHERE theme = (:theme)")
     List<ImageLegend> getAllImageTheme(String theme);

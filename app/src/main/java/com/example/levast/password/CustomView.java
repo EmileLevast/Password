@@ -36,7 +36,7 @@ public class CustomView extends ArrayAdapter<Integer> {
     private int sizeImg;
 
     public CustomView(@NonNull Context context, List<ImageLegend> img) {
-        super(context,0, AppDataBase.getDataBase(context).imageLegendDao().getAllId());
+        super(context,0, AppDataBase.getDataBase(context).imageLegendDao().getAllIdFromTheme(ImageLegend.SUBJECT));
         this.img=new ArrayList<>(img);
         this.context=context;
         sizeImg=0;
