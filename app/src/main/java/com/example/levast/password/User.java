@@ -2,6 +2,7 @@ package com.example.levast.password;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.util.Log;
 
 import java.util.ArrayList;
 

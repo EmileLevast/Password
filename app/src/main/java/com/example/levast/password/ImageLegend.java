@@ -18,11 +18,14 @@ public class ImageLegend {
     private String theme;
 
 
+
     public final static String SUBJECT="SUBJECT";
     public final static String VERB="VERB";
     public final static String PLACE="PLACE";
     public final static String TIME="TIME";
     public final static String FORM="FORM";
+
+    public final static String[] listTheme=new String[]{SUBJECT,VERB,TIME,FORM,PLACE};
 
     public String getTheme() {
         return theme;
