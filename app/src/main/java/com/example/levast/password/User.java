@@ -2,7 +2,6 @@ package com.example.levast.password;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -24,6 +23,12 @@ public class User {
     private int nbrFailure;
     private int nbrSuccess;
 
+    //time since the user tried to log in
+    //used to schedule callback with notification
+    private long timeFirstTry;
+    //indicates what is the nummer of this try
+    private int numOftry;
+
     /**
      * FIELD ONLY NEEDED AT RUN TIME
      */
@@ -41,6 +46,8 @@ public class User {
         isSavingPassword=true;
         nbrFailure=0;
         nbrSuccess=0;
+        numOftry=0;
+        timeFirstTry =0;
     }
 
 
@@ -68,6 +75,14 @@ public class User {
             currentInput.add(symbol);
     }
 
+    public void initStat()
+    {
+        numOftry=0;
+        timeFirstTry=System.currentTimeMillis();
+        nbrSuccess=0;
+        nbrFailure=0;
+    }
+
     public void logIn()
     {
         isSavingPassword=false;
@@ -79,6 +94,8 @@ public class User {
     public void register()
     {
         isSavingPassword=true;
+        //reset the stats
+
         passwordSaved.clear();
     }
 
@@ -98,6 +115,14 @@ public class User {
         this.nbrSuccess = nbrSuccess;
     }
 
+    public int getNumOftry() {
+        return numOftry;
+    }
+
+    public void nextTry() {
+        this.numOftry ++;
+    }
+
     public void addSuccess()
     {
         nbrSuccess++;
@@ -106,6 +131,18 @@ public class User {
     public void addFailure()
     {
         nbrFailure++;
+    }
+
+    public long getTimeFirstTry() {
+        return timeFirstTry;
+    }
+
+    public void setNumOftry(int numOftry) {
+        this.numOftry = numOftry;
+    }
+
+    public void setTimeFirstTry(long timeFirstTry) {
+        this.timeFirstTry = timeFirstTry;
     }
 
     public boolean isSavingPassword() {

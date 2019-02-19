@@ -21,6 +21,9 @@ public interface UserDao extends genericDao<User> {
     @Query("SELECT * FROM user")
     List<User> getAll();//return a list with all the users currently registered in the database
 
+    @Query("SELECT * FROM user WHERE id =(:userIds)")
+    User loadAllById(int userIds);
+
     @Query("SELECT * FROM user WHERE id IN (:userIds)")
     List<User> loadAllByIds(int[] userIds);
 

@@ -1,8 +1,11 @@
 package com.example.levast.password;
 
+import android.content.Intent;
 import android.content.res.Resources;
 
 import android.provider.ContactsContract;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -39,13 +42,13 @@ public class MainActivity extends AppCompatActivity {
     private CustomView customView;
     private GridView gridView;
 
-
-
     private Container<List<ImageLegend>> containerPagePictures;
-
-
     private int idHomePage;
     private int idPageImage;
+
+    public final static String CHANEl_ID="NOTIFICATION_TEST";
+    public final static String ID_USER_INTENT="ID_USER";
+    NotificationCompat.Builder mBuilder;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -57,7 +60,11 @@ public class MainActivity extends AppCompatActivity {
         //on cree notre objet aui va contenir nos mot de passes
         user = roomDB.userDao().loadFirstRow();
         if(user==null)
+        {
             user=new User();
+            //we insert here because the service may use some fields
+            roomDB.userDao().insertAll(user);
+        }
 
         //we launch the container with all the pictures
         containerPagePictures=new Container<>(loadAllImagefromDb());
@@ -85,6 +92,11 @@ public class MainActivity extends AppCompatActivity {
                     {
 
                         toPrint="New Password Saved";
+                        //we insert the id of the user to load him in the service
+                        user.initStat();
+                        Intent intent=new Intent(getApplicationContext(),ServiceNotification.class);
+                        intent.putExtra(ID_USER_INTENT,user.id);
+                        startService(intent);
                         printDataAboutPassword();
 
                     }
@@ -118,6 +130,9 @@ public class MainActivity extends AppCompatActivity {
         idPageImage=R.id.gridView;
         containerView=new ContainerView(this,idHomePage,idPageImage);
         containerView.printView(R.id.homePage);
+
+
+
     }
 
     public static int getScreenWidth() {
@@ -136,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
         containerView.printView(idPageImage);
         user.register();
         setCustomView();
+        //sendNotif("Register a new password");
     }
 
     //change the image of customView
@@ -209,4 +225,6 @@ public class MainActivity extends AppCompatActivity {
         }
         Log.w("msg","========================\n");
     }
+
+
 }
