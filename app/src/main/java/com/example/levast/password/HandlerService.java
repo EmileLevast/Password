@@ -1,6 +1,9 @@
 package com.example.levast.password;
 
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
@@ -26,8 +29,20 @@ public class HandlerService extends Handler {
         super.handleMessage(msg);
 
         Log.w("msg","ok");
+
+        // Create an Intent for the activity you want to start
+        Intent resultIntent = new Intent((Context) msg.obj, MainActivity.class);
+// Create the TaskStackBuilder and add the intent, which inflates the back stack
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create((Context) msg.obj);
+        stackBuilder.addNextIntentWithParentStack(resultIntent);
+// Get the PendingIntent containing the entire back stack
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
         NotificationCompat.Builder mBuilder= new NotificationCompat.Builder((Context) msg.obj,MainActivity.CHANEl_ID);
         mBuilder.setAutoCancel(true)
+                .setContentIntent(resultPendingIntent)
                 .setContentTitle("Reminder n°"+msg.arg1)
                 .setSmallIcon(R.drawable.memory_icon)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)

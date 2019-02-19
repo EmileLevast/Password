@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         NBR_PAGE=ImageLegend.listTheme.length;
         roomDB =AppDataBase.getDataBase(this);
         //on cree notre objet aui va contenir nos mot de passes
