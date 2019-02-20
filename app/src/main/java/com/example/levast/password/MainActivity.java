@@ -1,5 +1,6 @@
 package com.example.levast.password;
 
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.content.res.Resources;
 
@@ -21,28 +22,37 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    /*
+    Param of the Gridview
+     */
     public final static int NBR_COLUMN=4;
     public final static int NBR_LINE=5;
     public static int NBR_PAGE;
-    public final static char[] tableASCII=new char[]{
-        '0','1','2','3','4','5','6','7','8','9',
-        'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
-        'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
-        '\"','\'','!','^','#','$','%','&','/','{','(','[',')',']','=','}','?','*','~','+','-','_',',',';',':','.','<','>'
-    };
 
 
+    /*
+    Database
+     */
     public static User user;
     public AppDataBase roomDB;
 
+    /*
+    The views
+     */
     private ContainerView containerView;
     private CustomView customView;
     private GridView gridView;
 
+    /*
+    Manage the order of the views
+     */
     private Container<List<ImageLegend>> containerPagePictures;
     private int idHomePage;
     private int idPageImage;
 
+    /*
+    Intents
+     */
     public final static String CHANEl_ID="NOTIFICATION_TEST";
     //indicates to the service which user w want to load
     public final static String INTENT_LEVAST_PASSWORD_ID_USER ="INTENT_LEVAST_PASSWORD_ID_USER";
@@ -218,6 +228,12 @@ public class MainActivity extends AppCompatActivity {
         return listPage;
     }
 
+    public void showPolicyDialog(View v)
+    {
+        PasswordPolicyDialog passwordPolicyDialog=new PasswordPolicyDialog();
+        passwordPolicyDialog.show(getFragmentManager(),"dialogPolicy");
+    }
+
 
     private void printDataAboutPassword()
     {
@@ -230,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
         long PN=GeneratePassword.seqceInputToInt(user.getPasswordSaved());
         Log.w("msg","PN:"+PN);
 
-        List<Character> password=GeneratePassword.intToSqceSymbol(PN);
+        List<Character> password=GeneratePassword.intToSqceSymbol(PN,this);
         for(int i=0;i<password.size();i++)
         {
             Log.w("msg","Z["+i+"]: "+password.get(i));

@@ -49,6 +49,16 @@
                 android:onClick="RegisterClick"
                 android:text="Register"/>
 
+            <Button
+                android:id="@+id/PolicyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_below="@+id/loginButton"
+                android:onClick="showPolicyDialog"
+                android:text="Choose Policy"/>
+
         </RelativeLayout>
 
     </FrameLayout>
