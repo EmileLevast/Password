@@ -3,9 +3,6 @@ package com.example.levast.password;
 import android.content.Intent;
 import android.content.res.Resources;
 
-import android.provider.ContactsContract;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -47,14 +44,26 @@ public class MainActivity extends AppCompatActivity {
     private int idPageImage;
 
     public final static String CHANEl_ID="NOTIFICATION_TEST";
-    public final static String ID_USER_INTENT="ID_USER";
-    NotificationCompat.Builder mBuilder;
+    //indicates to the service which user w want to load
+    public final static String INTENT_LEVAST_PASSWORD_ID_USER ="INTENT_LEVAST_PASSWORD_ID_USER";
+    //key:indicates to the activity which page we want to show
+    public final static String INTENT_LEVAST_PASSWORD_ID_PAGE ="INTENT_LEVAST_PASSWORD_ID_PAGE";
+    //value:used to know which page to show on an intent received
+    public final static int SHOW_LOGIN =1;
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         NBR_PAGE=ImageLegend.listTheme.length;
+
+
+
+
+        /*
+        Load data from database
+         */
         roomDB =AppDataBase.getDataBase(this);
         //on cree notre objet aui va contenir nos mot de passes
         user = roomDB.userDao().loadFirstRow();
@@ -65,6 +74,10 @@ public class MainActivity extends AppCompatActivity {
             roomDB.userDao().insertAll(user);
         }
 
+
+        /*
+        Prepare All the graphics components
+         */
         //we launch the container with all the pictures
         containerPagePictures=new Container<>(loadAllImagefromDb());
 
@@ -94,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                         //we insert the id of the user to load him in the service
                         user.initStat();
                         Intent intent=new Intent(getApplicationContext(),ServiceNotification.class);
-                        intent.putExtra(ID_USER_INTENT,user.id);
+                        intent.putExtra(INTENT_LEVAST_PASSWORD_ID_USER,user.id);
                         startService(intent);
                         printDataAboutPassword();
 
@@ -130,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         containerView=new ContainerView(this,idHomePage,idPageImage);
         containerView.printView(R.id.homePage);
 
-
+        updateWithIntent(getIntent());
 
     }
 
@@ -225,5 +238,20 @@ public class MainActivity extends AppCompatActivity {
         Log.w("msg","========================\n");
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
 
+
+        updateWithIntent(intent);
+        super.onNewIntent(intent);
+    }
+
+    private void updateWithIntent(Intent intent)
+    {
+        int pageToLaunch=intent.getIntExtra(INTENT_LEVAST_PASSWORD_ID_PAGE,-1);
+        if(pageToLaunch==SHOW_LOGIN)
+        {
+            LogInClick(null);
+        }
+    }
 }

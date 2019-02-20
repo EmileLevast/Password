@@ -16,6 +16,8 @@ import android.util.Log;
 
 public class HandlerService extends Handler {
 
+
+
     public HandlerService() {
         super();
     }
@@ -32,12 +34,16 @@ public class HandlerService extends Handler {
 
         // Create an Intent for the activity you want to start
         Intent resultIntent = new Intent((Context) msg.obj, MainActivity.class);
+        resultIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        resultIntent.putExtra(MainActivity.INTENT_LEVAST_PASSWORD_ID_PAGE,MainActivity.SHOW_LOGIN);
+
 // Create the TaskStackBuilder and add the intent, which inflates the back stack
         TaskStackBuilder stackBuilder = TaskStackBuilder.create((Context) msg.obj);
         stackBuilder.addNextIntentWithParentStack(resultIntent);
 // Get the PendingIntent containing the entire back stack
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
 
 
         NotificationCompat.Builder mBuilder= new NotificationCompat.Builder((Context) msg.obj,MainActivity.CHANEl_ID);

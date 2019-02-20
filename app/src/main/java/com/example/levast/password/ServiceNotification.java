@@ -104,7 +104,7 @@ public class ServiceNotification extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.w("msg","service start");
 
-        user=roomDB.userDao().loadAllById(intent.getIntExtra(MainActivity.ID_USER_INTENT,-1));
+        user=roomDB.userDao().loadAllById(intent.getIntExtra(MainActivity.INTENT_LEVAST_PASSWORD_ID_USER,-1));
         isRunning=true;
 
 
