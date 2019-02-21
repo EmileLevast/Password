@@ -33,13 +33,16 @@
 
             <TextView
                 style="@style/boutonHomePage"
+                android:id="@+id/textResult"
                 android:background="@color/transparent"
                 android:textColor="@color/strokeButton"
+                android:text="Your Sequence"
                 android:layout_alignParentTop="true"/>
 
             <GridView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textResult"
                 android:layout_gravity="center"
                 android:numColumns="4"
                 android:scrollbars="vertical"
@@ -68,7 +71,7 @@
                 android:id="@+id/loginButton"
                 style="@style/boutonHomePage"
                 android:onClick="LogInClick"
-                android:text="Log In"/>
+                android:text="Generate Password"/>
             <Button
                 android:id="@+id/RegisterButton"
                 style="@style/boutonHomePage"

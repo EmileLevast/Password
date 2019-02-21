@@ -1,7 +1,6 @@
 package com.example.levast.password;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -12,6 +11,7 @@ public class Container <T>{
 
     ArrayList<T> list;
     int index;
+    int countloop;
 
     //true when all the data were read at least one time
     //work only for indexup
@@ -38,7 +38,9 @@ public class Container <T>{
         }
         else
         {
-            didLoop =true;
+            countloop++;
+            if(countloop>=GeneratePassword.NBR_OF_LOOP)
+                didLoop =true;
             index=0;
         }
     }
@@ -81,7 +83,7 @@ public class Container <T>{
     public void init()
     {
         didLoop =false;
-
+        countloop=0;
     }
 
     public int getSize()

@@ -68,11 +68,11 @@ public class ImageLegend {
     public static List<ImageLegend> getElementWithId(ArrayList<List<ImageLegend>> list,List<Integer> listIndex)
     {
         List<ImageLegend> res=new ArrayList<>(0);
-        if(list.size()==listIndex.size())
+        if(list.size()<=listIndex.size())
         {
-            for(int i=0;i<list.size();i++)
+            for(int i=0;i<listIndex.size();i++)
             {
-                res.add(list.get(i).get(listIndex.get(i)));
+                res.add(list.get(i%MainActivity.NBR_PAGE).get(listIndex.get(i)));
             }
         }
 

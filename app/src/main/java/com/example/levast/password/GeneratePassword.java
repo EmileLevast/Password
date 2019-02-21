@@ -19,12 +19,7 @@ public final class GeneratePassword {
     Shared Preferences for Password Policy
      */
     public static String[] keyPasswordPolicy;//=new String[]{"Numbers","Special characters","Uppercase letters","lowercase letters"};
-    /*public final static char[] tableASCII=new char[]{
-        '0','1','2','3','4','5','6','7','8','9',
-        'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
-        'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
-        '\"','\'','!','^','#','$','%','&','/','{','(','[',')',']','=','}','?','*','~','+','-','_',',',';',':','.','<','>'
-    };*/
+
 
     private final static HashMap<String,List<Character>> listAllChar;
     static {
@@ -40,6 +35,8 @@ public final class GeneratePassword {
         keyPasswordPolicy=listAllChar.keySet().toArray(new String[0]);
     }
 
+    //indicate the number of sentence we want for one sequence
+    public final static int NBR_OF_LOOP=2;
 
     /**
      * @param sequence contains the number of the position of the chosen images
@@ -51,7 +48,7 @@ public final class GeneratePassword {
         long res=0;
 
         //NBR_PAGES== S
-        for(int i=0;i<MainActivity.NBR_PAGE;i++)
+        for(int i=0;i<sequence.size();i++)
         {
             res+=sequence.get(i)*Math.pow(MainActivity.NBR_COLUMN*MainActivity.NBR_LINE,i);
         }

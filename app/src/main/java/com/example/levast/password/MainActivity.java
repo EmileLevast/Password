@@ -1,6 +1,5 @@
 package com.example.levast.password;
 
-import android.app.DialogFragment;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -20,7 +19,6 @@ import android.widget.Toast;
 import com.example.levast.password.Database.AppDataBase;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
