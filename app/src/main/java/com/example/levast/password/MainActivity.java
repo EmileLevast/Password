@@ -1,6 +1,9 @@
 package com.example.levast.password;
 
 import android.app.DialogFragment;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 
@@ -69,8 +72,6 @@ public class MainActivity extends AppCompatActivity {
         NBR_PAGE=ImageLegend.listTheme.length;
 
 
-
-
         /*
         Load data from database
          */
@@ -108,37 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 //if we have seen all the pages
                 if(containerPagePictures.isDidLoop())
                 {
-                    String toPrint;
-
-                    if(user.isSavingPassword())
-                    {
-
-                        toPrint="New Password Saved";
-                        //we insert the id of the user to load him in the service
-                        user.initStat();
-                        Intent intent=new Intent(getApplicationContext(),ServiceNotification.class);
-                        intent.putExtra(INTENT_LEVAST_PASSWORD_ID_USER,user.id);
-                        startService(intent);
-                        printDataAboutPassword();
-
-                    }
-                    else if(user.checkPassword())
-                    {
-                        toPrint="Correct Password";
-                        user.addSuccess();
-                    }
-                    else
-                    {
-                        toPrint="Incorrect Password";
-                        user.addFailure();
-                    }
-
-                    roomDB.userDao().insertAll(user);
-                    toPrint+=" \nNbr Failure: "+user.getNbrFailure()+" \nNbr Success:"+user.getNbrSuccess();
-                    //we check or save the password and go to the home page
-                    Toast.makeText(getApplicationContext(),toPrint,Toast.LENGTH_LONG).show();
-                    containerView.printView(R.id.homePage);
-                    containerPagePictures.init();
+                    sequenceCompleted();
                 }else
                 {
                     setCustomView();
@@ -147,12 +118,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //we add the view to the ContainerView in the order to organize the aparition of the different windows
-
         idHomePage=R.id.homePage;
         idPageImage=R.id.gridView;
         containerView=new ContainerView(this,idHomePage,idPageImage);
         containerView.printView(R.id.homePage);
 
+        //if the activity is launched by an intent (thanks to our notification) we have to redirect the user on the right page
         updateWithIntent(getIntent());
 
     }
@@ -163,17 +134,76 @@ public class MainActivity extends AppCompatActivity {
 
     public void LogInClick(View v)
     {
-        containerView.printView(idPageImage);
+        printPage(idPageImage);
         user.logIn();
-        setCustomView();
     }
 
     public void RegisterClick(View v)
     {
-        containerView.printView(idPageImage);
+        printPage(idPageImage);
         user.register();
+    }
+
+    /**
+     * Called when the user built a sentence
+     */
+    private void sequenceCompleted()
+    {
+        String toPrint;
+
+        //the user clicked on Register
+        if(user.isSavingPassword())
+        {
+
+            toPrint="New Password Saved";
+            //we insert the id of the user to load him in the service
+            user.initStat();
+
+            //we say to the service to begin the tests
+            sendIntentToService();
+            printDataAboutPassword();
+
+        }
+        //user clicked on the notification to test his memory
+        else if(user.isTrying())
+        {
+            if(user.checkPassword())
+            {
+                toPrint="Correct Password";
+            }
+            else
+            {
+                toPrint="Incorrect Password";
+
+            }
+            toPrint+=" \nNbr Failure: "+user.getNbrFailure()+" \nNbr Success:"+user.getNbrSuccess();
+        }
+        //user clicked on LogIn to get a password in Clipboard
+        else
+        {
+            toPrint="Password Saved in the ClipBoard";
+
+
+
+
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("Password", getPasswordAsText());
+            clipboard.setPrimaryClip(clip);
+        }
+
+        roomDB.userDao().insertAll(user);
+
+
+        //we check or save the password and go to the home page
+        Toast.makeText(getApplicationContext(),toPrint,Toast.LENGTH_LONG).show();
+        containerView.printView(R.id.homePage);
+        containerPagePictures.init();
+    }
+
+    private void printPage(int idPageToPrint)
+    {
+        containerView.printView(idPageToPrint);
         setCustomView();
-        //sendNotif("Register a new password");
     }
 
     //change the image of customView
@@ -182,39 +212,6 @@ public class MainActivity extends AppCompatActivity {
         customView.setImg(containerPagePictures.getItemNext());
         gridView.setAdapter(customView);
     }
-
-    private Integer[][] getAllDrawables()
-    {
-        ArrayList<Integer[]> res=new ArrayList<>(0);
-
-        int nbrElmtPage=NBR_COLUMN*NBR_LINE;
-        LinkedList<Integer> listElmtPage=new LinkedList<>();
-
-        int numImg=1;
-        int nbrPage=0;
-        Integer idDrawable=getResources().getIdentifier("test"+numImg,"drawable",this.getPackageName());
-
-        while(idDrawable!=0 && nbrPage<NBR_PAGE)
-        {
-            listElmtPage.add(idDrawable);
-            if(numImg%nbrElmtPage==0)
-            {
-                res.add( listElmtPage.toArray(new Integer[nbrElmtPage]));
-                listElmtPage.clear();
-                nbrPage++;
-            }
-
-            numImg++;
-            idDrawable=getResources().getIdentifier("test"+numImg,"drawable",this.getPackageName());
-
-            //we filled a page
-
-        }
-
-
-        return  res.toArray(new Integer[nbrPage][nbrElmtPage]);
-    }
-
 
     private ArrayList<List<ImageLegend>> loadAllImagefromDb()
     {
@@ -228,12 +225,59 @@ public class MainActivity extends AppCompatActivity {
         return listPage;
     }
 
+
     public void showPolicyDialog(View v)
     {
         PasswordPolicyDialog passwordPolicyDialog=new PasswordPolicyDialog();
         passwordPolicyDialog.show(getFragmentManager(),"dialogPolicy");
     }
 
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+
+        updateWithIntent(intent);
+        super.onNewIntent(intent);
+    }
+
+    /**
+     * Used when app launch (even if she was already running) by an intent
+     * @param intent
+     */
+    private void updateWithIntent(Intent intent)
+    {
+        int pageToLaunch=intent.getIntExtra(INTENT_LEVAST_PASSWORD_ID_PAGE,-1);
+        if(pageToLaunch==SHOW_LOGIN)
+        {
+            printPage(idPageImage);
+
+            //the user is currently testing his memory
+            user.doTry();
+        }
+
+        //we say that the player make a try, let register the stats at the end
+    }
+
+    /**
+     * Used to send an intent to the service which manage the reminder for the exercises
+     */
+    private void sendIntentToService()
+    {
+        Intent intent=new Intent(getApplicationContext(),ServiceNotification.class);
+        intent.putExtra(INTENT_LEVAST_PASSWORD_ID_USER,user.id);
+        startService(intent);
+    }
+
+    private String getPasswordAsText()
+    {
+        String text="";
+        List<Character> password=GeneratePassword.intToSqceSymbol(GeneratePassword.seqceInputToInt(user.getCurrentInput()),this);
+        for(Character elt: password)
+        {
+            text+=elt;
+        }
+        return text;
+    }
 
     private void printDataAboutPassword()
     {
@@ -252,22 +296,5 @@ public class MainActivity extends AppCompatActivity {
             Log.w("msg","Z["+i+"]: "+password.get(i));
         }
         Log.w("msg","========================\n");
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-
-
-        updateWithIntent(intent);
-        super.onNewIntent(intent);
-    }
-
-    private void updateWithIntent(Intent intent)
-    {
-        int pageToLaunch=intent.getIntExtra(INTENT_LEVAST_PASSWORD_ID_PAGE,-1);
-        if(pageToLaunch==SHOW_LOGIN)
-        {
-            LogInClick(null);
-        }
     }
 }

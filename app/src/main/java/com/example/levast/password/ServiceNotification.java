@@ -81,7 +81,8 @@ public class ServiceNotification extends Service {
                                 user.setTimeFirstTry(System.currentTimeMillis());
                             }
 
-                            roomDB.userDao().update(user);
+                            //We update only the field that we change here (else we remove the stat such as nbr of Failure)
+                            roomDB.userDao().updateTryUser(user.getTimeFirstTry(),user.getNumOftry(),user.id);
                         }
 
                     }

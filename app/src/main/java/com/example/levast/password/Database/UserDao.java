@@ -31,6 +31,7 @@ public interface UserDao extends genericDao<User> {
     @Query("SELECT * FROM user LIMIT 1")
     User loadFirstRow();
 
-
+    @Query("UPDATE user SET timeFirstTry = :timeFirstTry, numOftry=:numOftry WHERE id = :id")
+    void updateTryUser(long timeFirstTry,int numOftry, int id);
 
 }

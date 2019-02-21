@@ -40,10 +40,15 @@ public class User {
     //when true we register the new informations in "passwordSaved" array
     private boolean isSavingPassword;
 
+    @Ignore
+    //true if the user is trying to remember his password (test with the notification)
+    private boolean isTrying;
+
     public User() {
         passwordSaved =new ArrayList<>(0);
         currentInput =new ArrayList<>(0);
         isSavingPassword=true;
+        isTrying=true;
         nbrFailure=0;
         nbrSuccess=0;
         numOftry=0;
@@ -59,8 +64,18 @@ public class User {
      */
     public boolean checkPassword()
     {
-        return passwordSaved.size()== currentInput.size() &&
-                passwordSaved.equals(currentInput);
+        boolean check=false;
+        if(passwordSaved.size()== currentInput.size() &&
+                passwordSaved.equals(currentInput))
+        {
+            check=true;
+            addSuccess();
+        }
+        else
+        {
+            addFailure();
+        }
+        return  check;
     }
 
     public void setPasswordSaved(ArrayList<Integer> passwordSaved) {
@@ -86,7 +101,7 @@ public class User {
     public void logIn()
     {
         isSavingPassword=false;
-
+        isTrying=false;
         //we are going to enter a new password so we clear the previous data
         currentInput.clear();
     }
@@ -94,9 +109,20 @@ public class User {
     public void register()
     {
         isSavingPassword=true;
+        isTrying=false;
         //reset the stats
 
         passwordSaved.clear();
+    }
+
+    /**
+     * When the user click on the notification this method is called
+     */
+    public void doTry()
+    {
+        isSavingPassword=false;
+        isTrying=true;
+        currentInput.clear();
     }
 
     public int getNbrFailure() {
@@ -133,6 +159,14 @@ public class User {
         nbrFailure++;
     }
 
+    public boolean isTrying() {
+        return isTrying;
+    }
+
+    public void setTrying(boolean trying) {
+        isTrying = trying;
+    }
+
     public long getTimeFirstTry() {
         return timeFirstTry;
     }
@@ -151,6 +185,10 @@ public class User {
 
     public ArrayList<Integer> getPasswordSaved() {
         return passwordSaved;
+    }
+
+    public ArrayList<Integer> getCurrentInput() {
+        return currentInput;
     }
 }
 
