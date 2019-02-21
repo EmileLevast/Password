@@ -22,6 +22,7 @@ import com.example.levast.password.Database.AppDataBase;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Levast on 05.02.2019.
@@ -36,11 +37,12 @@ public class CustomView extends ArrayAdapter<Integer> {
     private int sizeImg;
 
     public CustomView(@NonNull Context context, List<ImageLegend> img) {
-        super(context,0, AppDataBase.getDataBase(context).imageLegendDao().getAllIdFromTheme(ImageLegend.SUBJECT));
+        super(context,0, ImageLegend.getOnlyIdFrom(img));//AppDataBase.getDataBase(context).imageLegendDao().getAllIdFromTheme(ImageLegend.SUBJECT));
         this.img=new ArrayList<>(img);
-        this.context=context;
+        this.context= context;
         sizeImg=0;
     }
+
 
 
     @Override

@@ -68,11 +68,6 @@ public final class GeneratePassword {
         //Z
         ArrayList<Character> serieSymbol=new ArrayList<>(0);
         ArrayList<Character> symbolAvailable=loadAllUsedCharacters(context);
-        if(symbolAvailable.isEmpty())
-        {
-            Toast.makeText(context,"Your Password Policy is wrong",Toast.LENGTH_SHORT).show();
-            return null;
-        }
 
         //Q
         long varTempo=nbr;

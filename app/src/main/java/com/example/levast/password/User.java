@@ -3,7 +3,9 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Levast on 05.02.2019.
@@ -124,6 +126,8 @@ public class User {
         isTrying=true;
         currentInput.clear();
     }
+
+
 
     public int getNbrFailure() {
         return nbrFailure;

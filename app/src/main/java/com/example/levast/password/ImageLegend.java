@@ -3,6 +3,9 @@ package com.example.levast.password;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Levast on 13.02.2019.
  */
@@ -55,5 +58,34 @@ public class ImageLegend {
 
     public void setLegend(String legend) {
         this.legend = legend;
+    }
+
+    /**
+     * @param list all the pages of images
+     * @param listIndex the index of the chosen image per page
+     * @return the image chosen for each page
+     */
+    public static List<ImageLegend> getElementWithId(ArrayList<List<ImageLegend>> list,List<Integer> listIndex)
+    {
+        List<ImageLegend> res=new ArrayList<>(0);
+        if(list.size()==listIndex.size())
+        {
+            for(int i=0;i<list.size();i++)
+            {
+                res.add(list.get(i).get(listIndex.get(i)));
+            }
+        }
+
+        return res;
+    }
+
+    public static List<Integer> getOnlyIdFrom(List<ImageLegend> list)
+    {
+        ArrayList<Integer> listId=new ArrayList<>(0);
+        for(ImageLegend item:list)
+        {
+            listId.add(item.getIdImage());
+        }
+        return listId;
     }
 }

@@ -44,14 +44,18 @@ public class MainActivity extends AppCompatActivity {
      */
     private ContainerView containerView;
     private CustomView customView;
+    private CustomView customViewResult;
     private GridView gridView;
+    private GridView gridViewResult;
 
     /*
     Manage the order of the views
      */
     private Container<List<ImageLegend>> containerPagePictures;
+    private ArrayList<List<ImageLegend>> allPagesImages;
     private int idHomePage;
     private int idPageImage;
+    private int idResultPage;
 
     /*
     Intents
@@ -90,7 +94,8 @@ public class MainActivity extends AppCompatActivity {
         Prepare All the graphics components
          */
         //we launch the container with all the pictures
-        containerPagePictures=new Container<>(loadAllImagefromDb());
+        allPagesImages=loadAllImagefromDb();
+        containerPagePictures=new Container<>(allPagesImages);
 
         //our custom view to display the image in a imageView
         customView=new CustomView(this, containerPagePictures.getCurrentItem());
@@ -99,6 +104,9 @@ public class MainActivity extends AppCompatActivity {
         gridView=findViewById(R.id.gridView);
         gridView.setNumColumns(NBR_COLUMN);
         gridView.setAdapter(customView);
+
+        //gridView to print the results
+        gridViewResult=findViewById(R.id.gridViewResult);
 
         //what to do on click
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -120,7 +128,8 @@ public class MainActivity extends AppCompatActivity {
         //we add the view to the ContainerView in the order to organize the aparition of the different windows
         idHomePage=R.id.homePage;
         idPageImage=R.id.gridView;
-        containerView=new ContainerView(this,idHomePage,idPageImage);
+        idResultPage=R.id.resultPage;
+        containerView=new ContainerView(this,idHomePage,idPageImage,idResultPage);
         containerView.printView(R.id.homePage);
 
         //if the activity is launched by an intent (thanks to our notification) we have to redirect the user on the right page
@@ -183,20 +192,17 @@ public class MainActivity extends AppCompatActivity {
         {
             toPrint="Password Saved in the ClipBoard";
 
-
-
-
             ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("Password", getPasswordAsText());
             clipboard.setPrimaryClip(clip);
         }
 
         roomDB.userDao().insertAll(user);
-
+        printResultSequence();
 
         //we check or save the password and go to the home page
         Toast.makeText(getApplicationContext(),toPrint,Toast.LENGTH_LONG).show();
-        containerView.printView(R.id.homePage);
+        //containerView.printView(R.id.homePage);
         containerPagePictures.init();
     }
 
@@ -238,6 +244,17 @@ public class MainActivity extends AppCompatActivity {
 
         updateWithIntent(intent);
         super.onNewIntent(intent);
+    }
+
+    public void goToHomePage(View view) {
+        containerView.printView(idHomePage);
+    }
+
+    private void printResultSequence()
+    {
+        customViewResult=new CustomView(this,ImageLegend.getElementWithId(allPagesImages,user.getCurrentInput()));
+        gridViewResult.setAdapter(customViewResult);
+        containerView.printView(idResultPage);
     }
 
     /**
