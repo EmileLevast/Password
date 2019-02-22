@@ -76,20 +76,23 @@
                 android:id="@+id/RegisterButton"
                 style="@style/boutonHomePage"
                 android:layout_above="@+id/loginButton"
+                android:layout_alignEnd="@id/loginButton"
+                android:layout_alignStart="@id/loginButton"
                 android:onClick="RegisterClick"
                 android:text="Register a Test"/>
 
             <Button
                 android:id="@+id/PolicyButton"
-                style="@style/boutonHomePage"
-                android:textSize="10sp"
-                android:layout_alignParentBottom="true"
-                android:textColor="@color/strokeButton"
-
-                android:background="@drawable/backgroundbutton"
-
+                style="@style/buttonSettings"
                 android:onClick="showPolicyDialog"
                 android:text="Choose Policy"/>
+
+            <Button
+                android:id="@+id/SentencesButton"
+                style="@style/buttonSettings"
+                android:layout_toEndOf="@id/PolicyButton"
+                android:onClick="showNumberSentencesDialog"
+                android:text="Number of Sentences"/>
 
         </RelativeLayout>
 

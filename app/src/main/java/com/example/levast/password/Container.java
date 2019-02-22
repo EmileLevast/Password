@@ -17,6 +17,7 @@ public class Container <T>{
     //work only for indexup
     boolean didLoop;
 
+
     /*public Container(T... item) {
         list=new ArrayList<>(Arrays.asList(item));
         index=0;
@@ -27,6 +28,7 @@ public class Container <T>{
     {
         list=new ArrayList<>(item);
         index=0;
+
         init();
     }
 
@@ -39,7 +41,7 @@ public class Container <T>{
         else
         {
             countloop++;
-            if(countloop>=GeneratePassword.NBR_OF_LOOP)
+            if(countloop>= NumberSentencesDialog.NBR_SENTENCES)
                 didLoop =true;
             index=0;
         }

@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 
 import android.support.v7.app.AppCompatActivity;
@@ -86,6 +87,12 @@ public class MainActivity extends AppCompatActivity {
             //we insert here because the service may use some fields
             roomDB.userDao().insertAll(user);
         }
+
+        /*
+        We update the param with the sharedPreference
+         */
+        SharedPreferences sharedPreferences=getSharedPreferences(PasswordPolicyDialog.NAME_SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        NumberSentencesDialog.NBR_SENTENCES=sharedPreferences.getInt(NumberSentencesDialog.KEY_NUMBER_SENTENCES,NumberSentencesDialog.DEFAULT_NUMBER_SENTENCES);
 
 
         /*
@@ -311,5 +318,10 @@ public class MainActivity extends AppCompatActivity {
             Log.w("msg","Z["+i+"]: "+password.get(i));
         }
         Log.w("msg","========================\n");
+    }
+
+    public void showNumberSentencesDialog(View view) {
+        NumberSentencesDialog numberSentencesDialog=new NumberSentencesDialog();
+        numberSentencesDialog.show(getFragmentManager(),"NumberSentencesDialog");
     }
 }

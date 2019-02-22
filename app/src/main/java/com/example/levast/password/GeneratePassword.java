@@ -35,9 +35,6 @@ public final class GeneratePassword {
         keyPasswordPolicy=listAllChar.keySet().toArray(new String[0]);
     }
 
-    //indicate the number of sentence we want for one sequence
-    public final static int NBR_OF_LOOP=2;
-
     /**
      * @param sequence contains the number of the position of the chosen images
      * @return an integer corresponding to this sqce
