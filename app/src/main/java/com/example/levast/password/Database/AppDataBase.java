@@ -22,7 +22,7 @@ import java.util.concurrent.Executors;
  */
 
 @TypeConverters({Converter.class})
-@Database(entities = {User.class, ImageLegend.class}, version = 1)
+@Database(entities = {User.class, ImageLegend.class}, version = 2)
 public abstract class AppDataBase extends RoomDatabase {
 
     private static AppDataBase INSTANCE;

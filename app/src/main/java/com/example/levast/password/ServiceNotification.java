@@ -23,10 +23,10 @@ public class ServiceNotification extends Service {
     private boolean isAlive;
     private AppDataBase roomDB;
     volatile private User user;
-
+    Thread thread;
     private Context context;
 
-    private final static long TIME_BETWEEN_TRY=3000;
+    private final static long TIME_SLEEP=3000;
 
     //the delay between each try of the password in millis
     private long[] timeOfRetry=new long[]{
@@ -37,6 +37,7 @@ public class ServiceNotification extends Service {
             1000*30,
             1000*60,
             1000*90,*/
+            1000*30,
             1000*60*10,//10 min first try
             1000*60*60*24,//24 h
             1000*60*60*24*4,//4 jours
@@ -51,19 +52,20 @@ public class ServiceNotification extends Service {
         super.onCreate();
         Log.w("msg","service created");
         isRunning=false;
-        isAlive =true;
+        isAlive =false;
 
         mHandler=new HandlerService();
         roomDB=AppDataBase.getDataBase(this);
         context=this;
 
-        Thread thread=new Thread(new Runnable() {
+        thread=new Thread(new Runnable() {
 
             @Override
             public void run() {
 
                 while(isAlive)
                 {
+                    Log.w("msg","is Alive > isRunning="+isRunning+ " user:"+user);
                     if (isRunning&& user!=null)
                     {
                         Log.w("msg","running");
@@ -90,25 +92,31 @@ public class ServiceNotification extends Service {
                     }
 
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(TIME_SLEEP);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
 
-                //we stop the service
-                stopSelf();
+
             }
         });
-        thread.start();
+
+
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.w("msg","service start");
 
-        user=roomDB.userDao().loadAllById(intent.getIntExtra(MainActivity.INTENT_LEVAST_PASSWORD_ID_USER,-1));
-        isRunning=true;
+        if(!thread.isAlive())
+        {
+            user=roomDB.userDao().loadAllById(intent.getIntExtra(MainActivity.INTENT_LEVAST_PASSWORD_ID_USER,-1));
+            isAlive=true;
+            isRunning=true;
+            Log.w("msg","thread start");
+            thread.start();
+        }
 
 
 
@@ -125,7 +133,13 @@ public class ServiceNotification extends Service {
 
     @Override
     public void onDestroy() {
-        Log.w("msg","service detruit");
+
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Log.w("msg","service destroy");
         super.onDestroy();
     }
 }

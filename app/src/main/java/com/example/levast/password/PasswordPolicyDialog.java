@@ -82,7 +82,7 @@ public class PasswordPolicyDialog extends DialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
 
-        Log.w("msg","dismiss");
+
 
         if(checkAtLeastOneItemSelected())
         {
@@ -105,5 +105,28 @@ public class PasswordPolicyDialog extends DialogFragment {
             }
         }
         return false;
+    }
+
+    /**
+     * Check that at least one policy is selected in the sharedPreference
+     * If it's not the case we set one policy
+     */
+    public static void checkAtLeastOnePolicySharedPref(Context context)
+    {
+        SharedPreferences sharedPreferences=context.getSharedPreferences(NAME_SHARED_PREFERENCE, Context.MODE_PRIVATE);
+
+        for(int i=0;i<GeneratePassword.keyPasswordPolicy.length;i++)
+        {
+            //if we meet one policy as selected, that#s enough we return
+            if(sharedPreferences.getBoolean(GeneratePassword.keyPasswordPolicy[i],false))
+            {
+                return;
+            }
+        }
+
+        //if none of the policy was selected , we set the first one
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.putBoolean(GeneratePassword.keyPasswordPolicy[0],true);
+        editor.apply();
     }
 }

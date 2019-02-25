@@ -1,11 +1,14 @@
 package com.example.levast.password;
 
+
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+
 import android.os.Handler;
 import android.os.Message;
+
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
@@ -30,7 +33,7 @@ public class HandlerService extends Handler {
     public void handleMessage(Message msg) {
         super.handleMessage(msg);
 
-        Log.w("msg","ok");
+
 
         // Create an Intent for the activity you want to start
         Intent resultIntent = new Intent((Context) msg.obj, MainActivity.class);
@@ -56,8 +59,11 @@ public class HandlerService extends Handler {
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from((Context) msg.obj);
 
+        Log.w("msg","ok");
 // notificationId is a unique int for each notification that you must define
         notificationManager.notify(1, mBuilder.build());
 
     }
+
+
 }

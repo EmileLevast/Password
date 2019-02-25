@@ -1,5 +1,7 @@
 package com.example.levast.password;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -7,11 +9,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
@@ -37,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public static User user;
     public AppDataBase roomDB;
+    private SharedPreferences sharedPreferences;
 
     /*
     The views
@@ -71,6 +77,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        /*
+        Instantiate Notification Parameters
+         */
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        createNotificationChannel();
+
         setContentView(R.layout.activity_main);
         NBR_PAGE=ImageLegend.listTheme.length;
 
@@ -91,7 +105,8 @@ public class MainActivity extends AppCompatActivity {
         /*
         We update the param with the sharedPreference
          */
-        SharedPreferences sharedPreferences=getSharedPreferences(PasswordPolicyDialog.NAME_SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        PasswordPolicyDialog.checkAtLeastOnePolicySharedPref(this);
+        sharedPreferences=getSharedPreferences(PasswordPolicyDialog.NAME_SHARED_PREFERENCE, Context.MODE_PRIVATE);
         NumberSentencesDialog.NBR_SENTENCES=sharedPreferences.getInt(NumberSentencesDialog.KEY_NUMBER_SENTENCES,NumberSentencesDialog.DEFAULT_NUMBER_SENTENCES);
 
 
@@ -173,6 +188,9 @@ public class MainActivity extends AppCompatActivity {
             //we insert the id of the user to load him in the service
             user.initStat();
 
+            //we save the number of sentences for this test
+            user.setNbrOfSentenceForTry(NumberSentencesDialog.NBR_SENTENCES);
+
             //we say to the service to begin the tests
             sendIntentToService();
             printDataAboutPassword();
@@ -190,6 +208,8 @@ public class MainActivity extends AppCompatActivity {
                 toPrint="Incorrect Password";
 
             }
+            NumberSentencesDialog.NBR_SENTENCES=sharedPreferences.getInt(NumberSentencesDialog.KEY_NUMBER_SENTENCES,NumberSentencesDialog.DEFAULT_NUMBER_SENTENCES);
+
             toPrint+=" \nNbr Failure: "+user.getNbrFailure()+" \nNbr Success:"+user.getNbrSuccess();
         }
         //user clicked on LogIn to get a password in Clipboard
@@ -257,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void printResultSequence()
     {
-        customViewResult=new CustomView(this,ImageLegend.getElementWithId(allPagesImages,user.getCurrentInput()));
+        customViewResult=new CustomView(this,ImageLegend.getElementWithId(allPagesImages,user.getCurrentUsedPassword()));
         gridViewResult.setAdapter(customViewResult);
         containerView.printView(idResultPage);
     }
@@ -271,6 +291,7 @@ public class MainActivity extends AppCompatActivity {
         int pageToLaunch=intent.getIntExtra(INTENT_LEVAST_PASSWORD_ID_PAGE,-1);
         if(pageToLaunch==SHOW_LOGIN)
         {
+            NumberSentencesDialog.NBR_SENTENCES=user.getNbrOfSentenceForTry();
             printPage(idPageImage);
 
             //the user is currently testing his memory
@@ -301,6 +322,23 @@ public class MainActivity extends AppCompatActivity {
         return text;
     }
 
+
+    public void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= 26) {
+            CharSequence name = "Reminder";
+            String description = "The user must test his memory about his Password";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(MainActivity.CHANEl_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager =getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
     private void printDataAboutPassword()
     {
         Log.w("msg","=====Password Saved=====\n");
@@ -324,4 +362,6 @@ public class MainActivity extends AppCompatActivity {
         NumberSentencesDialog numberSentencesDialog=new NumberSentencesDialog();
         numberSentencesDialog.show(getFragmentManager(),"NumberSentencesDialog");
     }
+
+
 }

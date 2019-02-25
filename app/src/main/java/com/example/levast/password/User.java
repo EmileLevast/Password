@@ -31,6 +31,9 @@ public class User {
     //indicates what is the nummer of this try
     private int numOftry;
 
+    //save the choice of the user about the number of sentences
+    private int nbrOfSentenceForTry;
+
     /**
      * FIELD ONLY NEEDED AT RUN TIME
      */
@@ -163,6 +166,14 @@ public class User {
         nbrFailure++;
     }
 
+    public int getNbrOfSentenceForTry() {
+        return nbrOfSentenceForTry;
+    }
+
+    public void setNbrOfSentenceForTry(int nbrOfSentenceForTry) {
+        this.nbrOfSentenceForTry = nbrOfSentenceForTry;
+    }
+
     public boolean isTrying() {
         return isTrying;
     }
@@ -193,6 +204,17 @@ public class User {
 
     public ArrayList<Integer> getCurrentInput() {
         return currentInput;
+    }
+
+    public ArrayList<Integer> getCurrentUsedPassword()
+    {
+        if(isSavingPassword)
+        {
+            return passwordSaved;
+        }else
+        {
+            return currentInput;
+        }
     }
 }
 
