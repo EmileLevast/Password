@@ -41,11 +41,18 @@ public class MainActivity extends AppCompatActivity {
 
 
     /*
+        Use with boolean , example if field corrsponding to KEY_NUMBERS = true then we use numbers to generate password
+         */
+    public final static String NAME_SHARED_PREFERENCE="NAME_SHARED_PREFERENCE_PASSWORD_POLICY";
+    public final static String KEY_USER_DOCUMENT_NAME ="KEY_USER_DOCUMENT_NAME";
+    public static SharedPreferences sharedPreferences;
+
+
+    /*
     Database
      */
     public static User user;
     public AppDataBase roomDB;
-    private SharedPreferences sharedPreferences;
 
     /*
     Firestore
@@ -97,6 +104,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         /*
+        sharedPreference
+         */
+        sharedPreferences=getSharedPreferences(MainActivity.NAME_SHARED_PREFERENCE, Context.MODE_PRIVATE);
+
+        /*
         Load data from database
          */
         roomDB =AppDataBase.getDataBase(this);
@@ -126,7 +138,9 @@ public class MainActivity extends AppCompatActivity {
                             user=new User(documentReference.getId());
                             documentReference.set(user);
                         }
-
+                        SharedPreferences.Editor editor=sharedPreferences.edit();
+                        editor.putString(KEY_USER_DOCUMENT_NAME,user.getDocumentName());
+                        editor.apply();
                     }
                 });
 
@@ -135,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
         We update the param with the sharedPreference
          */
         PasswordPolicyDialog.checkAtLeastOnePolicySharedPref(this);
-        sharedPreferences=getSharedPreferences(PasswordPolicyDialog.NAME_SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        sharedPreferences=getSharedPreferences(NAME_SHARED_PREFERENCE, Context.MODE_PRIVATE);
         NumberSentencesDialog.NBR_SENTENCES=sharedPreferences.getInt(NumberSentencesDialog.KEY_NUMBER_SENTENCES,NumberSentencesDialog.DEFAULT_NUMBER_SENTENCES);
 
 

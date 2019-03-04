@@ -2,7 +2,6 @@ package com.example.levast.password;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -85,7 +84,7 @@ public final class GeneratePassword {
      */
     private static ArrayList<Character> loadAllUsedCharacters(Context context)
     {
-        SharedPreferences sharedPreferences=context.getSharedPreferences(PasswordPolicyDialog.NAME_SHARED_PREFERENCE,Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences=context.getSharedPreferences(MainActivity.NAME_SHARED_PREFERENCE,Context.MODE_PRIVATE);
         ArrayList<Character> listSymbolAvailable=new ArrayList<>(0);
         for(String key:keyPasswordPolicy)
         {

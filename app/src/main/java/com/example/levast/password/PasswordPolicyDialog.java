@@ -5,13 +5,9 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.location.GnssClock;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.widget.Toast;
-
-import java.util.List;
 
 /**
  * Created by Levast on 20.02.2019.
@@ -19,11 +15,6 @@ import java.util.List;
 
 public class PasswordPolicyDialog extends DialogFragment {
 
-    /*
-    Use with boolean , example if field corrsponding to KEY_NUMBERS = true then we use numbers to generate password
-     */
-    private SharedPreferences sharedPreferences;
-    public final static String NAME_SHARED_PREFERENCE="NAME_SHARED_PREFERENCE_PASSWORD_POLICY";
     private boolean[] itemChecked;
 
 
@@ -33,16 +24,11 @@ public class PasswordPolicyDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-
-
-        //load the sharedPreference
-        sharedPreferences=getActivity().getSharedPreferences(NAME_SHARED_PREFERENCE, Context.MODE_PRIVATE);
-
         //we search in the preference what is the current choice of the user, let display the item already checked
         itemChecked=new boolean[GeneratePassword.keyPasswordPolicy.length];
         for(int i=0;i<GeneratePassword.keyPasswordPolicy.length;i++)
         {
-            itemChecked[i]=sharedPreferences.getBoolean(GeneratePassword.keyPasswordPolicy[i],false);
+            itemChecked[i]=MainActivity.sharedPreferences.getBoolean(GeneratePassword.keyPasswordPolicy[i],false);
         }
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -65,7 +51,7 @@ public class PasswordPolicyDialog extends DialogFragment {
 
                 //we check that he user selected at least one policy
 
-                    SharedPreferences.Editor editor=sharedPreferences.edit();
+                    SharedPreferences.Editor editor=MainActivity.sharedPreferences.edit();
                     for(int j=0;j<itemChecked.length;j++)
                     {
                         editor.putBoolean( GeneratePassword.keyPasswordPolicy[j],itemChecked[j]);
@@ -113,7 +99,7 @@ public class PasswordPolicyDialog extends DialogFragment {
      */
     public static void checkAtLeastOnePolicySharedPref(Context context)
     {
-        SharedPreferences sharedPreferences=context.getSharedPreferences(NAME_SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences=context.getSharedPreferences(MainActivity.NAME_SHARED_PREFERENCE, Context.MODE_PRIVATE);
 
         for(int i=0;i<GeneratePassword.keyPasswordPolicy.length;i++)
         {

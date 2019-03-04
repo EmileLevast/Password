@@ -25,9 +25,6 @@ public class User {
     private int nbrFailure;
     private int nbrSuccess;
 
-    //time since the user tried to log in
-    //used to schedule callback with notification
-    private long timeFirstTry;
     //indicates what is the nummer of this try
     private int numOftry;
 
@@ -64,7 +61,7 @@ public class User {
         nbrFailure=0;
         nbrSuccess=0;
         numOftry=0;
-        timeFirstTry =0;
+
     }
 
 
@@ -105,7 +102,7 @@ public class User {
     public void initStat()
     {
         numOftry=0;
-        timeFirstTry=System.currentTimeMillis();
+
         nbrSuccess=0;
         nbrFailure=0;
     }
@@ -189,21 +186,13 @@ public class User {
         return isTrying&&!isSavingPassword;
     }
 
-    public void setTrying(boolean trying) {
-        isTrying = trying;
-    }
 
-    public long getTimeFirstTry() {
-        return timeFirstTry;
-    }
 
     public void setNumOftry(int numOftry) {
         this.numOftry = numOftry;
     }
 
-    public void setTimeFirstTry(long timeFirstTry) {
-        this.timeFirstTry = timeFirstTry;
-    }
+
 
     public boolean isSavingPassword() {
         return isSavingPassword&&!isTrying;

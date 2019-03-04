@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 
 /**
  * Created by Levast on 22.02.2019.
@@ -26,7 +25,7 @@ public class NumberSentencesDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         //load the sharedPreference
-        sharedPreferences=getActivity().getSharedPreferences(PasswordPolicyDialog.NAME_SHARED_PREFERENCE, Context.MODE_PRIVATE);
+
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Number of sentences");
