@@ -70,7 +70,7 @@
             <Button
                 android:id="@+id/loginButton"
                 style="@style/boutonHomePage"
-                android:onClick="LogInClick"
+                android:onClick="GenerateClick"
                 android:text="Generate Password"/>
             <Button
                 android:id="@+id/RegisterButton"

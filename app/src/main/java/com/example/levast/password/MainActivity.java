@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -23,6 +22,10 @@ import android.widget.Toast;
 
 
 import com.example.levast.password.Database.AppDataBase;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +46,12 @@ public class MainActivity extends AppCompatActivity {
     public static User user;
     public AppDataBase roomDB;
     private SharedPreferences sharedPreferences;
+
+    /*
+    Firestore
+     */
+    FirebaseFirestore firestoreDB;
+    public static final String COLLECTION_USERS="COLLECTION_USERS";
 
     /*
     The views
@@ -66,8 +75,6 @@ public class MainActivity extends AppCompatActivity {
     Intents
      */
     public final static String CHANEl_ID="NOTIFICATION_TEST";
-    //indicates to the service which user w want to load
-    public final static String INTENT_LEVAST_PASSWORD_ID_USER ="INTENT_LEVAST_PASSWORD_ID_USER";
     //key:indicates to the activity which page we want to show
     public final static String INTENT_LEVAST_PASSWORD_ID_PAGE ="INTENT_LEVAST_PASSWORD_ID_PAGE";
     //value:used to know which page to show on an intent received
@@ -94,13 +101,35 @@ public class MainActivity extends AppCompatActivity {
          */
         roomDB =AppDataBase.getDataBase(this);
         //on cree notre objet aui va contenir nos mot de passes
-        user = roomDB.userDao().loadFirstRow();
+        /*user = roomDB.userDao().loadFirstRow();
         if(user==null)
         {
             user=new User();
             //we insert here because the service may use some fields
             roomDB.userDao().insertAll(user);
-        }
+        }*/
+
+        /*
+        intiate Firestore
+         */
+        firestoreDB = FirebaseFirestore.getInstance();
+        firestoreDB.collection(COLLECTION_USERS).document("LGQCmprI55sVFmIjO5Fi")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        //we download the user
+                        user=documentSnapshot.toObject(User.class);
+                        if(user==null)
+                        {
+                            DocumentReference documentReference=firestoreDB.collection(COLLECTION_USERS).document();
+                            user=new User(documentReference.getId());
+                            documentReference.set(user);
+                        }
+
+                    }
+                });
+
 
         /*
         We update the param with the sharedPreference
@@ -155,13 +184,15 @@ public class MainActivity extends AppCompatActivity {
         //if the activity is launched by an intent (thanks to our notification) we have to redirect the user on the right page
         updateWithIntent(getIntent());
 
+
+
     }
 
     public static int getScreenWidth() {
         return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
 
-    public void LogInClick(View v)
+    public void GenerateClick(View v)
     {
         printPage(idPageImage);
         user.logIn();
@@ -192,8 +223,9 @@ public class MainActivity extends AppCompatActivity {
             user.setNbrOfSentenceForTry(NumberSentencesDialog.NBR_SENTENCES);
 
             //we say to the service to begin the tests
-            sendIntentToService();
-            printDataAboutPassword();
+            user.nextTry();//his field nextTry is set to 1, thanks to that we know the tests begin
+            NotificationAlarm.createAlarm(this,user.getDocumentName());
+            //printDataAboutPassword();
 
         }
         //user clicked on the notification to test his memory
@@ -222,7 +254,10 @@ public class MainActivity extends AppCompatActivity {
             clipboard.setPrimaryClip(clip);
         }
 
-        roomDB.userDao().insertAll(user);
+        //roomDB.userDao().insertAll(user);
+        firestoreDB.collection(COLLECTION_USERS).document(user.getDocumentName())
+                .set(user);
+
         printResultSequence();
 
         //we check or save the password and go to the home page
@@ -296,20 +331,23 @@ public class MainActivity extends AppCompatActivity {
 
             //the user is currently testing his memory
             user.doTry();
+            firestoreDB.collection(COLLECTION_USERS).document(user.getDocumentName())
+                    .set(user);
+            //we update the database because the get method of the user is not already ending
         }
-
-        //we say that the player make a try, let register the stats at the end
     }
 
     /**
      * Used to send an intent to the service which manage the reminder for the exercises
      */
-    private void sendIntentToService()
+    /*private void sendIntentToService()
     {
         Intent intent=new Intent(getApplicationContext(),ServiceNotification.class);
-        intent.putExtra(INTENT_LEVAST_PASSWORD_ID_USER,user.id);
+        intent.putExtra(NotificationAlarm.INTENT_LEVAST_PASSWORD_ID_USER,user.id);
         startService(intent);
-    }
+    }*/
+
+
 
     private String getPasswordAsText()
     {

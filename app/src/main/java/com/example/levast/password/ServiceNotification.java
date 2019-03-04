@@ -1,3 +1,4 @@
+/*
 package com.example.levast.password;
 
 import android.app.Service;
@@ -12,9 +13,11 @@ import android.util.Log;
 
 import com.example.levast.password.Database.AppDataBase;
 
+*/
 /**
  * Created by Levast on 19.02.2019.
- */
+ *//*
+
 
 public class ServiceNotification extends Service {
 
@@ -30,13 +33,15 @@ public class ServiceNotification extends Service {
 
     //the delay between each try of the password in millis
     private long[] timeOfRetry=new long[]{
+*/
 /*
             1000,
             1000*5,
             1000*20,
             1000*30,
             1000*60,
-            1000*90,*/
+            1000*90,*//*
+
             1000*30,
             1000*60*10,//10 min first try
             1000*60*60*24,//24 h
@@ -111,7 +116,7 @@ public class ServiceNotification extends Service {
 
         if(!thread.isAlive())
         {
-            user=roomDB.userDao().loadAllById(intent.getIntExtra(MainActivity.INTENT_LEVAST_PASSWORD_ID_USER,-1));
+            user=roomDB.userDao().loadAllById(intent.getIntExtra(NotificationAlarm.INTENT_LEVAST_PASSWORD_ID_USER,-1));
             isAlive=true;
             isRunning=true;
             Log.w("msg","thread start");
@@ -143,3 +148,4 @@ public class ServiceNotification extends Service {
         super.onDestroy();
     }
 }
+*/

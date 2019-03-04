@@ -49,7 +49,14 @@ public class User {
     //true if the user is trying to remember his password (test with the notification)
     private boolean isTrying;
 
+    @Ignore
+    private String documentName;
+
     public User() {
+    }
+
+    public User(String documentName) {
+        this.documentName=documentName;
         passwordSaved =new ArrayList<>(0);
         currentInput =new ArrayList<>(0);
         isSavingPassword=true;
@@ -166,6 +173,10 @@ public class User {
         nbrFailure++;
     }
 
+    public String getDocumentName() {
+        return documentName;
+    }
+
     public int getNbrOfSentenceForTry() {
         return nbrOfSentenceForTry;
     }
@@ -175,7 +186,7 @@ public class User {
     }
 
     public boolean isTrying() {
-        return isTrying;
+        return isTrying&&!isSavingPassword;
     }
 
     public void setTrying(boolean trying) {
@@ -195,7 +206,7 @@ public class User {
     }
 
     public boolean isSavingPassword() {
-        return isSavingPassword;
+        return isSavingPassword&&!isTrying;
     }
 
     public ArrayList<Integer> getPasswordSaved() {
