@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
         //user clicked on the notification to test his memory
         else if(user.isTrying())
         {
-            if(user.checkPassword())
+            if(user.checkPassword(this))
             {
                 toPrint="Correct Password";
             }

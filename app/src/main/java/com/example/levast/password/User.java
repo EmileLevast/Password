@@ -1,6 +1,8 @@
 package com.example.levast.password;
 
 
+import android.content.Context;
+
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
@@ -31,13 +33,19 @@ public class User {
     private String documentName;
 
     public User() {
+        init();
     }
 
     public User(String documentName) {
         this.documentName=documentName;
-
-        currentInput =new ArrayList<>(0);
         listTest=new ArrayList<>(0);
+        init();
+    }
+
+    //fields not created by firestore need to be instantiate
+    private void init()
+    {
+        currentInput=new ArrayList<>(0);
         isSavingPassword=true;
         isTrying=true;
     }
@@ -45,7 +53,7 @@ public class User {
     /**
      * @return true if the two passwords are equals
      */
-    public boolean checkPassword()
+    public boolean checkPassword(Context context)
     {
         boolean check=false;
         ArrayList<Integer> passwordSaved= getCurrentTest().getPasswordSaved();
@@ -54,10 +62,15 @@ public class User {
         {
             check=true;
             getCurrentTest().addSuccess();
+
         }
         else
         {
             getCurrentTest().addFailure();
+
+            //if failure we have to reschedule the alarms from the last one
+            getCurrentTest().setNumOfTry(getCurrentTest().getNumOfTry()-1);
+            NotificationAlarm.createAlarmFrom(context,documentName,getCurrentTest().getNumOfTry()-1);
         }
         return  check;
     }
