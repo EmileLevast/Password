@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 
 import android.os.Build;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     private int idHomePage;
     private int idPageImage;
     private int idResultPage;
+    private int idWaitPage;
 
     /*
     Intents
@@ -125,24 +127,7 @@ public class MainActivity extends AppCompatActivity {
         intiate Firestore
          */
         firestoreDB = FirebaseFirestore.getInstance();
-        firestoreDB.collection(COLLECTION_USERS).document("LGQCmprI55sVFmIjO5Fi")
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        //we download the user
-                        user=documentSnapshot.toObject(User.class);
-                        if(user==null)
-                        {
-                            DocumentReference documentReference=firestoreDB.collection(COLLECTION_USERS).document();
-                            user=new User(documentReference.getId());
-                            documentReference.set(user);
-                        }
-                        SharedPreferences.Editor editor=sharedPreferences.edit();
-                        editor.putString(KEY_USER_DOCUMENT_NAME,user.getDocumentName());
-                        editor.apply();
-                    }
-                });
+        initFirestore();
 
 
         /*
@@ -192,13 +177,10 @@ public class MainActivity extends AppCompatActivity {
         idHomePage=R.id.homePage;
         idPageImage=R.id.gridView;
         idResultPage=R.id.resultPage;
-        containerView=new ContainerView(this,idHomePage,idPageImage,idResultPage);
-        containerView.printView(R.id.homePage);
+        idWaitPage=R.id.waitPage;
+        containerView=new ContainerView(this,idWaitPage,idHomePage,idPageImage,idResultPage);
 
-        //if the activity is launched by an intent (thanks to our notification) we have to redirect the user on the right page
-        updateWithIntent(getIntent());
-
-
+        containerView.printView(idWaitPage);
 
     }
 
@@ -208,13 +190,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void GenerateClick(View v)
     {
-        printPage(idPageImage);
+        printPageImage(idPageImage);
         user.logIn();
     }
 
     public void RegisterClick(View v)
     {
-        printPage(idPageImage);
+        printPageImage(idPageImage);
         user.register();
     }
 
@@ -280,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
         containerPagePictures.init();
     }
 
-    private void printPage(int idPageToPrint)
+    private void printPageImage(int idPageToPrint)
     {
         containerView.printView(idPageToPrint);
         setCustomView();
@@ -341,27 +323,16 @@ public class MainActivity extends AppCompatActivity {
         if(pageToLaunch==SHOW_LOGIN)
         {
             NumberSentencesDialog.NBR_SENTENCES=user.getNbrOfSentenceForTry();
-            printPage(idPageImage);
+            printPageImage(idPageImage);
 
             //the user is currently testing his memory
             user.doTry();
-            firestoreDB.collection(COLLECTION_USERS).document(user.getDocumentName())
-                    .set(user);
-            //we update the database because the get method of the user is not already ending
+
+        }else
+        {
+            containerView.printView(idHomePage);
         }
     }
-
-    /**
-     * Used to send an intent to the service which manage the reminder for the exercises
-     */
-    /*private void sendIntentToService()
-    {
-        Intent intent=new Intent(getApplicationContext(),ServiceNotification.class);
-        intent.putExtra(NotificationAlarm.INTENT_LEVAST_PASSWORD_ID_USER,user.id);
-        startService(intent);
-    }*/
-
-
 
     private String getPasswordAsText()
     {
@@ -374,6 +345,55 @@ public class MainActivity extends AppCompatActivity {
         return text;
     }
 
+    private void initFirestore()
+    {
+
+
+        Handler handler=new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //if the onCreate method is not already done , we report the download
+                if(findViewById(idWaitPage).getVisibility()==View.GONE)
+                {
+                    initFirestore();
+                }else
+                {
+                    downloadUser();
+                }
+            }
+        },2000);
+    }
+
+    private void downloadUser()
+    {
+        firestoreDB.collection(COLLECTION_USERS).document(sharedPreferences.getString(KEY_USER_DOCUMENT_NAME,""))
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+
+                        //we download the user
+                        user=documentSnapshot.toObject(User.class);
+                        if(user==null)
+                        {
+                            DocumentReference documentReference=firestoreDB.collection(COLLECTION_USERS).document();
+                            user=new User(documentReference.getId());
+                            documentReference.set(user);
+
+                            SharedPreferences.Editor editor=sharedPreferences.edit();
+                            editor.putString(KEY_USER_DOCUMENT_NAME,user.getDocumentName());
+                            editor.apply();
+                        }
+
+                        //if the activity is launched by an intent (thanks to our notification) we have to redirect the user on the right page
+                        updateWithIntent(getIntent());
+
+
+                    }
+                });
+    }
 
     public void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because

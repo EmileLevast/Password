@@ -23,7 +23,7 @@ public class ContainerView {
         for (Integer viewId : item) {
             View view=(activity.findViewById(viewId));
 
-            view.setVisibility(View.INVISIBLE);
+            view.setVisibility(View.GONE);
             listView.put(viewId,view);
         }
 
@@ -35,7 +35,7 @@ public class ContainerView {
     public void printView(Integer viewId)
     {
         if(index!=0)
-            listView.get(index).setVisibility(View.INVISIBLE);
+            listView.get(index).setVisibility(View.GONE);
         listView.get(viewId).setVisibility(View.VISIBLE);
         index=viewId;
     }
