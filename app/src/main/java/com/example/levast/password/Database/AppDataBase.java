@@ -22,7 +22,7 @@ import java.util.concurrent.Executors;
  */
 
 @TypeConverters({Converter.class})
-@Database(entities = {User.class, ImageLegend.class}, version = 3)
+@Database(entities = { ImageLegend.class}, version = 1)
 public abstract class AppDataBase extends RoomDatabase {
 
     private static AppDataBase INSTANCE;
@@ -33,11 +33,7 @@ public abstract class AppDataBase extends RoomDatabase {
         if(INSTANCE==null)
         {
             INSTANCE= buildDataBase(context);
-
-            //TODO not sure about that
-            //we do a first call to create the database if it's not the case
-            INSTANCE.userDao().loadFirstRow();
-
+            INSTANCE.imageLegendDao().insertAll();
         }
         return INSTANCE;
     }
@@ -183,6 +179,6 @@ public abstract class AppDataBase extends RoomDatabase {
 
     }
 
-    public abstract UserDao userDao();
+
     public abstract ImageLegendDao imageLegendDao();
 }

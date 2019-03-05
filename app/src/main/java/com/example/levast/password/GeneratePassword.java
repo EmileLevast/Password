@@ -54,7 +54,7 @@ public final class GeneratePassword {
 
     /**
      * @param nbr PN calculated with seqceInputToInt
-     * @return
+     *
      */
     public static List<Character> intToSqceSymbol(long nbr,Context context)
     {

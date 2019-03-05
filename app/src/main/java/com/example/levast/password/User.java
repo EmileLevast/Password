@@ -1,52 +1,33 @@
 package com.example.levast.password;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.PrimaryKey;
 
+
+import com.google.firebase.firestore.Exclude;
+import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Levast on 05.02.2019.
  */
 
-@Entity
+
 public class User {
 
-    /**
-     * DATA TO SAVE IN THE DATABASE
-     */
-    @PrimaryKey(autoGenerate = true)
-    public int id;
 
-    //this list contains the password which allows the user to log in
-    private ArrayList<Integer> passwordSaved;
-    private int nbrFailure;
-    private int nbrSuccess;
+    //contain all the tests of the user and the last test in the list is the current one
+    private ArrayList<Test> listTest;
 
-    //indicates what is the nummer of this try
-    private int numOftry;
-
-    //save the choice of the user about the number of sentences
-    private int nbrOfSentenceForTry;
-
-    /**
-     * FIELD ONLY NEEDED AT RUN TIME
-     */
-    @Ignore
-    //contains the input data of user who wants to log in
+    //contains the input data of user
+    //the password he is currently clicking
     private ArrayList<Integer> currentInput;
 
-    @Ignore
     //when true we register the new informations in "passwordSaved" array
     private boolean isSavingPassword;
 
-    @Ignore
     //true if the user is trying to remember his password (test with the notification)
     private boolean isTrying;
 
-    @Ignore
+    //contain the name of the document that refer to the user in Firestore
     private String documentName;
 
     public User() {
@@ -54,57 +35,46 @@ public class User {
 
     public User(String documentName) {
         this.documentName=documentName;
-        passwordSaved =new ArrayList<>(0);
+
         currentInput =new ArrayList<>(0);
+        listTest=new ArrayList<>(0);
         isSavingPassword=true;
         isTrying=true;
-        nbrFailure=0;
-        nbrSuccess=0;
-        numOftry=0;
-
     }
 
-
-
-
-
-/**
+    /**
      * @return true if the two passwords are equals
      */
     public boolean checkPassword()
     {
         boolean check=false;
+        ArrayList<Integer> passwordSaved= getCurrentTest().getPasswordSaved();
         if(passwordSaved.size()== currentInput.size() &&
                 passwordSaved.equals(currentInput))
         {
             check=true;
-            addSuccess();
+            getCurrentTest().addSuccess();
         }
         else
         {
-            addFailure();
+            getCurrentTest().addFailure();
         }
         return  check;
     }
 
-    public void setPasswordSaved(ArrayList<Integer> passwordSaved) {
-        this.passwordSaved = passwordSaved;
-    }
-
     public void addSymbolToPassword(Integer symbol)
     {
-        if(isSavingPassword)
-            passwordSaved.add(symbol);
-        else
-            currentInput.add(symbol);
+        currentInput.add(symbol);
     }
 
-    public void initStat()
+    //When we finish to register a new Test This method is called
+    public void addNewTest()
     {
-        numOftry=0;
 
-        nbrSuccess=0;
-        nbrFailure=0;
+        listTest.add(new Test(PasswordPolicyDialog.getChosenPolicy(),currentInput));
+
+        //we set tne number of try to 1, we know the tests begin for this user
+        getCurrentTest().nextTry();
     }
 
     public void logIn()
@@ -120,8 +90,7 @@ public class User {
         isSavingPassword=true;
         isTrying=false;
         //reset the stats
-
-        passwordSaved.clear();
+        currentInput.clear();
     }
 
     /**
@@ -134,87 +103,42 @@ public class User {
         currentInput.clear();
     }
 
-
-
-    public int getNbrFailure() {
-        return nbrFailure;
-    }
-
-    public void setNbrFailure(int nbrFailure) {
-        this.nbrFailure = nbrFailure;
-    }
-
-    public int getNbrSuccess() {
-        return nbrSuccess;
-    }
-
-    public void setNbrSuccess(int nbrSuccess) {
-        this.nbrSuccess = nbrSuccess;
-    }
-
-    public int getNumOftry() {
-        return numOftry;
-    }
-
-    public void nextTry() {
-        this.numOftry ++;
-    }
-
-    public void addSuccess()
-    {
-        nbrSuccess++;
-    }
-
-    public void addFailure()
-    {
-        nbrFailure++;
-    }
-
     public String getDocumentName() {
         return documentName;
     }
 
-    public int getNbrOfSentenceForTry() {
-        return nbrOfSentenceForTry;
-    }
-
-    public void setNbrOfSentenceForTry(int nbrOfSentenceForTry) {
-        this.nbrOfSentenceForTry = nbrOfSentenceForTry;
-    }
-
+    @Exclude
     public boolean isTrying() {
         return isTrying&&!isSavingPassword;
     }
 
-
-
-    public void setNumOftry(int numOftry) {
-        this.numOftry = numOftry;
-    }
-
-
-
+    @Exclude
     public boolean isSavingPassword() {
         return isSavingPassword&&!isTrying;
     }
 
-    public ArrayList<Integer> getPasswordSaved() {
-        return passwordSaved;
-    }
-
+    @Exclude
     public ArrayList<Integer> getCurrentInput() {
         return currentInput;
     }
 
-    public ArrayList<Integer> getCurrentUsedPassword()
+    /**
+     * Do not call this method before the user registered at least one test
+     * @return the currentTest
+     */
+    @Exclude
+    public Test getCurrentTest()
     {
-        if(isSavingPassword)
-        {
-            return passwordSaved;
-        }else
-        {
-            return currentInput;
-        }
+       //There are at least one Test
+        if(listTest.isEmpty())
+            return null;
+
+        return listTest.get(listTest.size()-1);
+    }
+
+    //seem to be useless, but if yu want to save the listTest Field , firestore need to have an acess to it
+    public ArrayList<Test> getListTest() {
+        return listTest;
     }
 }
 

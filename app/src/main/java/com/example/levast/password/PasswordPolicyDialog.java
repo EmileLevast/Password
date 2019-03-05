@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 /**
  * Created by Levast on 20.02.2019.
  */
@@ -16,9 +18,6 @@ import android.widget.Toast;
 public class PasswordPolicyDialog extends DialogFragment {
 
     private boolean[] itemChecked;
-
-
-
 
 
     @Override
@@ -91,6 +90,19 @@ public class PasswordPolicyDialog extends DialogFragment {
             }
         }
         return false;
+    }
+
+    public static ArrayList<String> getChosenPolicy()
+    {
+        ArrayList<String> policyChosen=new ArrayList<>(0);
+        for(int i=0;i<GeneratePassword.keyPasswordPolicy.length;i++)
+        {
+            if(MainActivity.sharedPreferences.getBoolean(GeneratePassword.keyPasswordPolicy[i],false))
+            {
+                policyChosen.add(GeneratePassword.keyPasswordPolicy[i]);
+            }
+        }
+        return policyChosen;
     }
 
     /**

@@ -38,9 +38,9 @@ public class BootReceiver extends BroadcastReceiver {
                         User user=documentSnapshot.toObject(User.class);
 
                         //if the user had a test begun
-                        if(user!=null&&user.getNumOftry()>0)
+                        if(user!=null&&user.getCurrentTest().getNumOfTry()>0)
                         {
-                            NotificationAlarm.createAlarmFrom(context,user.getDocumentName(),user.getNumOftry()-1);
+                            NotificationAlarm.createAlarmFrom(context,user.getDocumentName(),user.getCurrentTest().getNumOfTry()-1);
                         }
                     }
                 });

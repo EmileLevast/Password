@@ -11,10 +11,10 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldPath;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+
 
 /**
  * Created by Levast on 01.03.2019.
@@ -38,16 +38,16 @@ public class AlarmReceiver extends BroadcastReceiver {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         userToNotify=documentSnapshot.toObject(User.class);
-                        Log.w("msg","notif sent:"+ (userToNotify != null ? userToNotify.getNumOftry() : -1));
+                        Log.w("msg","notif sent:"+ (userToNotify != null ? userToNotify.getCurrentTest().getNumOfTry() : -1));
 
                         //we send a notif
                         sendNotification(context);
 
                         //user go to nextTry
-                        userToNotify.nextTry();
+                        userToNotify.getCurrentTest().nextTry();
 
                         firestoreDb.collection(MainActivity.COLLECTION_USERS).document(userToNotify.getDocumentName())
-                                .update("numOftry",userToNotify.getNumOftry());
+                                .update("listTest",userToNotify.getListTest());
                     }
                 });
 
@@ -73,7 +73,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         NotificationCompat.Builder mBuilder= new NotificationCompat.Builder(context,MainActivity.CHANEl_ID);
         mBuilder.setAutoCancel(true)
                 .setContentIntent(resultPendingIntent)
-                .setContentTitle("Reminder n°"+ userToNotify.getNumOftry())
+                .setContentTitle("Reminder n°"+ userToNotify.getCurrentTest().getNumOfTry())
                 .setSmallIcon(R.drawable.memory_icon)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentText("do you remember your password?\ntest it now!");

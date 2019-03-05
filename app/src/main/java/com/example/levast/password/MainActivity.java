@@ -213,13 +213,13 @@ public class MainActivity extends AppCompatActivity {
 
             toPrint="New Password Saved";
             //we insert the id of the user to load him in the service
-            user.initStat();
+            user.addNewTest();
 
             //we save the number of sentences for this test
-            user.setNbrOfSentenceForTry(NumberSentencesDialog.NBR_SENTENCES);
+            //user.getCurrentTest().setNbrSentenceForSequence(NumberSentencesDialog.NBR_SENTENCES);
 
             //we say to the service to begin the tests
-            user.nextTry();//his field nextTry is set to 1, thanks to that we know the tests begin
+            //user.nextTry();//his field nextTry is set to 1, thanks to that we know the tests begin
             NotificationAlarm.createAlarm(this,user.getDocumentName());
             //printDataAboutPassword();
 
@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
             }
             NumberSentencesDialog.NBR_SENTENCES=sharedPreferences.getInt(NumberSentencesDialog.KEY_NUMBER_SENTENCES,NumberSentencesDialog.DEFAULT_NUMBER_SENTENCES);
 
-            toPrint+=" \nNbr Failure: "+user.getNbrFailure()+" \nNbr Success:"+user.getNbrSuccess();
+            toPrint+=" \nNbr Failure: "+user.getCurrentTest().getFailure()+" \nNbr Success:"+user.getCurrentTest().getSuccess();
         }
         //user clicked on LogIn to get a password in Clipboard
         else
@@ -308,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void printResultSequence()
     {
-        customViewResult=new CustomView(this,ImageLegend.getElementWithId(allPagesImages,user.getCurrentUsedPassword()));
+        customViewResult=new CustomView(this,ImageLegend.getElementWithId(allPagesImages,user.getCurrentInput()));
         gridViewResult.setAdapter(customViewResult);
         containerView.printView(idResultPage);
     }
@@ -322,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
         int pageToLaunch=intent.getIntExtra(INTENT_LEVAST_PASSWORD_ID_PAGE,-1);
         if(pageToLaunch==SHOW_LOGIN)
         {
-            NumberSentencesDialog.NBR_SENTENCES=user.getNbrOfSentenceForTry();
+            NumberSentencesDialog.NBR_SENTENCES=user.getCurrentTest().getNbrSentenceForSequence();
             printPageImage(idPageImage);
 
             //the user is currently testing his memory
@@ -347,8 +347,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void initFirestore()
     {
-
-
         Handler handler=new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -373,11 +371,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-
                         //we download the user
                         user=documentSnapshot.toObject(User.class);
+                        //if we don't find the document
                         if(user==null)
                         {
+                            //we create it with an id auto-generated
                             DocumentReference documentReference=firestoreDB.collection(COLLECTION_USERS).document();
                             user=new User(documentReference.getId());
                             documentReference.set(user);
@@ -414,12 +413,12 @@ public class MainActivity extends AppCompatActivity {
     private void printDataAboutPassword()
     {
         Log.w("msg","=====Password Saved=====\n");
-        for(int i=0;i<user.getPasswordSaved().size();i++)
+        for(int i=0;i<user.getCurrentInput().size();i++)
         {
-            Log.w("msg","e["+i+"]: "+user.getPasswordSaved().get(i));
+            Log.w("msg","e["+i+"]: "+user.getCurrentInput().get(i));
         }
 
-        long PN=GeneratePassword.seqceInputToInt(user.getPasswordSaved());
+        long PN=GeneratePassword.seqceInputToInt(user.getCurrentInput());
         Log.w("msg","PN:"+PN);
 
         List<Character> password=GeneratePassword.intToSqceSymbol(PN,this);

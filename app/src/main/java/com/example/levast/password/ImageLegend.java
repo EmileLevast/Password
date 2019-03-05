@@ -48,17 +48,13 @@ public class ImageLegend {
         return idImage;
     }
 
-    public void setIdImage(int idImage) {
-        this.idImage = idImage;
-    }
+
 
     public String getLegend() {
         return legend;
     }
 
-    public void setLegend(String legend) {
-        this.legend = legend;
-    }
+
 
     /**
      * @param list all the pages of images
