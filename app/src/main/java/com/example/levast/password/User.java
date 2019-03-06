@@ -69,8 +69,12 @@ public class User {
             getCurrentTest().addFailure();
 
             //if failure we have to reschedule the alarms from the last one
-            getCurrentTest().setNumOfTry(getCurrentTest().getNumOfTry()-1);
-            NotificationAlarm.createAlarmFrom(context,documentName,getCurrentTest().getNumOfTry()-1);
+            int newNumOfTry=getCurrentTest().getNumOfTry()-1;
+            if(newNumOfTry>=0)
+            {
+                getCurrentTest().setNumOfTry(newNumOfTry);
+                NotificationAlarm.createAlarmFrom(context,documentName,newNumOfTry);
+            }
         }
         return  check;
     }
