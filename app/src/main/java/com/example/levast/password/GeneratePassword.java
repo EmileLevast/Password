@@ -46,7 +46,8 @@ public final class GeneratePassword {
         //NBR_PAGES== S
         for(int i=0;i<sequence.size();i++)
         {
-            res+=sequence.get(i)*Math.pow(MainActivity.NBR_COLUMN*MainActivity.NBR_LINE,i);
+            //we add 1 else the first img (==0) has no impact on the password
+            res+=(sequence.get(i)+1)*Math.pow(MainActivity.NBR_COLUMN*MainActivity.NBR_LINE,i);
         }
         //res == PN
         return res;
@@ -94,5 +95,16 @@ public final class GeneratePassword {
             }
         }
         return listSymbolAvailable;
+    }
+
+    static String getPasswordAsText(Context context)
+    {
+        String text="";
+        List<Character> password= intToSqceSymbol(seqceInputToInt(MainActivity.user.getCurrentInput()),context);
+        for(Character elt: password)
+        {
+            text+=elt;
+        }
+        return text;
     }
 }

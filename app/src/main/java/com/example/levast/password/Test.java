@@ -1,5 +1,7 @@
 package com.example.levast.password;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 
 /**
@@ -12,10 +14,18 @@ import java.util.ArrayList;
  */
 public class Test {
 
+    //indicate the nbr of failure and success of the user for this test
     private int success;
     private int failure;
+
+    //indicates How many time did the user test his memory for this registered test
     private int numOfTry;
+
+    //indicates the number of sentences contained in the sequence for this test
     private int nbrSentenceForSequence;
+
+    //contains the password generated with the sequence of images and the password policy
+    private String passwordGenerated;
     private ArrayList<String> policy;
     //this list contains the password which allows the user to log in
     private ArrayList<Integer> passwordSaved;
@@ -24,12 +34,18 @@ public class Test {
     public Test() {
     }
 
-    public Test(ArrayList<String> policy, ArrayList<Integer> passwordSaved) {
+    public Test(ArrayList<String> policy, ArrayList<Integer> passwordSaved, Context context) {
         this.nbrSentenceForSequence = passwordSaved.size()/ImageLegend.listTheme.length;
         this.passwordSaved = new ArrayList<>(passwordSaved);
         this.policy = policy;
+        passwordGenerated=GeneratePassword.getPasswordAsText(context);
         success=0;
         failure=0;
+    }
+
+    //useful to getBack from Firestore
+    public String getPasswordGenerated() {
+        return passwordGenerated;
     }
 
     public int getNumOfTry() {

@@ -30,6 +30,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -188,10 +189,21 @@ public class MainActivity extends AppCompatActivity {
         return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
 
-    public void GenerateClick(View v)
+    public void createPasswordClick(View v)
     {
         printPageImage(idPageImage);
         user.logIn();
+    }
+
+    public void generateTestClick(View view) {
+
+        user.register();
+        Random rand=new Random();
+        for(int i=0;i<NumberSentencesDialog.NBR_SENTENCES*NBR_PAGE;i++)
+        {
+            user.addSymbolToPassword(rand.nextInt(NBR_COLUMN*NBR_LINE));
+        }
+        sequenceCompleted();
     }
 
     public void RegisterClick(View v)
@@ -213,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
 
             toPrint="New Password Saved";
             //we insert the id of the user to load him in the service
-            user.addNewTest();
+            user.addNewTest(this);
 
             //we save the number of sentences for this test
             //user.getCurrentTest().setNbrSentenceForSequence(NumberSentencesDialog.NBR_SENTENCES);
@@ -246,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
             toPrint="Password Saved in the ClipBoard";
 
             ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("Password", getPasswordAsText());
+            ClipData clip = ClipData.newPlainText("Password", GeneratePassword.getPasswordAsText(this));
             clipboard.setPrimaryClip(clip);
         }
 
@@ -275,6 +287,7 @@ public class MainActivity extends AppCompatActivity {
         gridView.setAdapter(customView);
     }
 
+
     private ArrayList<List<ImageLegend>> loadAllImagefromDb()
     {
         ArrayList<List<ImageLegend>> listPage=new ArrayList<>(0);
@@ -293,7 +306,6 @@ public class MainActivity extends AppCompatActivity {
         PasswordPolicyDialog passwordPolicyDialog=new PasswordPolicyDialog();
         passwordPolicyDialog.show(getFragmentManager(),"dialogPolicy");
     }
-
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -334,17 +346,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private String getPasswordAsText()
-    {
-        String text="";
-        List<Character> password=GeneratePassword.intToSqceSymbol(GeneratePassword.seqceInputToInt(user.getCurrentInput()),this);
-        for(Character elt: password)
-        {
-            text+=elt;
-        }
-        return text;
-    }
-
     private void initFirestore()
     {
         Handler handler=new Handler();
@@ -365,33 +366,39 @@ public class MainActivity extends AppCompatActivity {
 
     private void downloadUser()
     {
-        firestoreDB.collection(COLLECTION_USERS).document(sharedPreferences.getString(KEY_USER_DOCUMENT_NAME,""))
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+        //we try to get the document corresponding to the user
+        try
+        {
+            firestoreDB.collection(COLLECTION_USERS).document(sharedPreferences.getString(KEY_USER_DOCUMENT_NAME,""))
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                        //we download the user
-                        user=documentSnapshot.toObject(User.class);
-                        //if we don't find the document
-                        if(user==null)
-                        {
-                            //we create it with an id auto-generated
-                            DocumentReference documentReference=firestoreDB.collection(COLLECTION_USERS).document();
-                            user=new User(documentReference.getId());
-                            documentReference.set(user);
+                            //we download the user
+                            user=documentSnapshot.toObject(User.class);
 
-                            SharedPreferences.Editor editor=sharedPreferences.edit();
-                            editor.putString(KEY_USER_DOCUMENT_NAME,user.getDocumentName());
-                            editor.apply();
+
                         }
+                    });
 
-                        //if the activity is launched by an intent (thanks to our notification) we have to redirect the user on the right page
-                        updateWithIntent(getIntent());
+        }catch (IllegalArgumentException exception)
+        {
+            //if there is no such document
+            //we upload his document
+            //we create it with an id auto-generated
+            DocumentReference documentReference=firestoreDB.collection(COLLECTION_USERS).document();
+            user=new User(documentReference.getId());
+            documentReference.set(user);
 
+            SharedPreferences.Editor editor=sharedPreferences.edit();
+            editor.putString(KEY_USER_DOCUMENT_NAME,user.getDocumentName());
+            editor.apply();
+        }
 
-                    }
-                });
+        //if the activity is launched by an intent (thanks to our notification) we have to redirect the user on the right page
+        updateWithIntent(getIntent());
+
     }
 
     public void createNotificationChannel() {
@@ -429,10 +436,9 @@ public class MainActivity extends AppCompatActivity {
         Log.w("msg","========================\n");
     }
 
+
     public void showNumberSentencesDialog(View view) {
         NumberSentencesDialog numberSentencesDialog=new NumberSentencesDialog();
         numberSentencesDialog.show(getFragmentManager(),"NumberSentencesDialog");
     }
-
-
 }

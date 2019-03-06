@@ -134,7 +134,7 @@ public abstract class AppDataBase extends RoomDatabase {
                 new ImageLegend(R.drawable.beach,"Beach", ImageLegend.PLACE),
                 new ImageLegend(R.drawable.castle,"Castle", ImageLegend.PLACE),
                 new ImageLegend(R.drawable.earth,"Earth", ImageLegend.PLACE),
-                new ImageLegend(R.drawable.familyhouse,"Field", ImageLegend.PLACE),
+                new ImageLegend(R.drawable.familyhouse,"House", ImageLegend.PLACE),
                 new ImageLegend(R.drawable.field,"Field", ImageLegend.PLACE),
                 new ImageLegend(R.drawable.footpath,"Footpath", ImageLegend.PLACE),
                 new ImageLegend(R.drawable.forest,"Forest", ImageLegend.PLACE),

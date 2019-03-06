@@ -65,7 +65,7 @@
             <Button
                 android:id="@+id/loginButton"
                 style="@style/boutonHomePage"
-                android:onClick="GenerateClick"
+                android:onClick="createPasswordClick"
                 android:text="Generate Password"/>
             <Button
                 android:id="@+id/RegisterButton"
@@ -75,6 +75,15 @@
                 android:layout_alignStart="@id/loginButton"
                 android:onClick="RegisterClick"
                 android:text="Register a Test"/>
+
+            <Button
+                android:id="@+id/GenerateTest"
+                style="@style/boutonHomePage"
+                android:layout_above="@+id/RegisterButton"
+                android:layout_alignEnd="@id/loginButton"
+                android:layout_alignStart="@id/loginButton"
+                android:onClick="generateTestClick"
+                android:text="Generate a test"/>
 
             <Button
                 android:id="@+id/PolicyButton"

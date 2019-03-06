@@ -77,14 +77,15 @@ public class User {
 
     public void addSymbolToPassword(Integer symbol)
     {
+        //we add +1 else the first image (index ==0) has no impact on the password
         currentInput.add(symbol);
     }
 
     //When we finish to register a new Test This method is called
-    public void addNewTest()
+    public void addNewTest(Context context)
     {
 
-        listTest.add(new Test(PasswordPolicyDialog.getChosenPolicy(),currentInput));
+        listTest.add(new Test(PasswordPolicyDialog.getChosenPolicy(),currentInput,context));
 
         //we set tne number of try to 1, we know the tests begin for this user
         getCurrentTest().nextTry();
