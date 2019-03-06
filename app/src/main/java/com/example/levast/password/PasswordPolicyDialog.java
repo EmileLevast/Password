@@ -38,9 +38,23 @@ public class PasswordPolicyDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i, boolean b) {
 
-                        //we write the choice of the user in sharedPreference
-
+                        //we write the choice of the user
                         itemChecked[i]=b;
+
+                        AlertDialog dialog= (AlertDialog) getDialog();
+
+                        if(dialog!=null)
+                        {
+                            if(b && checkAtLeastOneItemSelected())
+                            {
+                                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
+                            }
+                            else
+                            {
+                                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
+                            }
+                        }
+
 
                     }
                 });
@@ -64,7 +78,7 @@ public class PasswordPolicyDialog extends DialogFragment {
     }
 
 
-    @Override
+   /* @Override
     public void onDismiss(DialogInterface dialog) {
 
 
@@ -75,10 +89,10 @@ public class PasswordPolicyDialog extends DialogFragment {
         }
         else
         {
-            show(getFragmentManager(),"dialogPolicy");
             Toast.makeText(getContext(),"Error: choose at least 1 item",Toast.LENGTH_LONG).show();
+            show(getFragmentManager(),"dialogPolicy");
         }
-    }
+    }*/
 
     private boolean checkAtLeastOneItemSelected()
     {
