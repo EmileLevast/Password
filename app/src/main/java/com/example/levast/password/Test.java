@@ -2,7 +2,10 @@ package com.example.levast.password;
 
 import android.content.Context;
 
+import com.google.firebase.firestore.Exclude;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Levast on 05.03.2019.
@@ -14,9 +17,20 @@ import java.util.ArrayList;
  */
 public class Test {
 
-    //indicate the nbr of failure and success of the user for this test
+    //used as key for the listStat
+    private final String CHARACTER_PASSWORD="CHARACTER_PASSWORD";
+    private final String IMAGE_PASSWORD="IMAGE_PASSWORD";
+
+    /*//indicate the nbr of failure and success of the user for this test
     private int success;
     private int failure;
+
+    private int successChar;
+    private int failureChar;
+*/
+
+    //contain the stats for a password with image and the passyord with characters
+    private HashMap<String,StatsTest> listStat;
 
     //indicates How many time did the user test his memory for this registered test
     private int numOfTry;
@@ -27,20 +41,22 @@ public class Test {
     //contains the password generated with the sequence of images and the password policy
     private String passwordGenerated;
     private ArrayList<String> policy;
-    //this list contains the password which allows the user to log in
+    //this list contains the position of the images chosen for this test
     private ArrayList<Integer> passwordSaved;
 
     //seem to be useless but just for object deserialization with firestore
     public Test() {
     }
 
-    public Test(ArrayList<String> policy, ArrayList<Integer> passwordSaved, Context context) {
+    public Test(ArrayList<String> policy, ArrayList<Integer> passwordSaved,String passwordGenerated) {
         this.nbrSentenceForSequence = passwordSaved.size()/ImageLegend.listTheme.length;
         this.passwordSaved = new ArrayList<>(passwordSaved);
         this.policy = policy;
-        passwordGenerated=GeneratePassword.getPasswordAsText(context);
-        success=0;
-        failure=0;
+        this.passwordGenerated=passwordGenerated;
+
+        listStat=new HashMap<>(0);
+        listStat.put(CHARACTER_PASSWORD,new StatsTest());
+        listStat.put(IMAGE_PASSWORD,new StatsTest());
     }
 
     //useful to getBack from Firestore
@@ -72,7 +88,28 @@ public class Test {
         return policy;
     }
 
-    public int getSuccess() {
+    public ArrayList<Integer> getPasswordSaved() {
+        return passwordSaved;
+    }
+
+    @Exclude
+    public StatsTest getStatCharacterPassword()
+    {
+        return listStat.get(CHARACTER_PASSWORD);
+    }
+
+    @Exclude
+    public StatsTest getStatsImagePassword()
+    {
+        return listStat.get(IMAGE_PASSWORD);
+    }
+
+    //only used to retrieve data from firestore
+    public HashMap<String, StatsTest> getListStat() {
+        return listStat;
+    }
+
+    /*public int getSuccess() {
         return success;
     }
 
@@ -98,7 +135,23 @@ public class Test {
         failure++;
     }
 
-    public ArrayList<Integer> getPasswordSaved() {
-        return passwordSaved;
+
+    public void addFailureChar()
+    {
+        failureChar++;
     }
+
+    public void addSuccessChar()
+    {
+        successChar++;
+    }
+
+    public int getSuccessChar() {
+        return successChar;
+    }
+
+    public int getFailureChar() {
+        return failureChar;
+    }*/
+
 }

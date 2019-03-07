@@ -17,12 +17,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
-import com.example.levast.password.Database.AppDataBase;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 /**
  * Created by Levast on 05.02.2019.
@@ -56,7 +56,7 @@ public class CustomView extends ArrayAdapter<Integer> {
         if(listItem == null)
         {
             listItem = LayoutInflater.from(context).inflate(R.layout.layoutadapter,parent,false);
-            ImageView imageView=(ImageView) listItem.findViewById(R.id.imageView);
+            ImageView imageView=listItem.findViewById(R.id.imageView);
             TextView textLegend=listItem.findViewById(R.id.textLegend);
 
             sizeImg=(MainActivity.getScreenWidth()-2*marginBetweenPictures*MainActivity.NBR_COLUMN)/MainActivity.NBR_COLUMN;

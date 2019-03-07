@@ -2,9 +2,9 @@ package com.example.levast.password;
 
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.firebase.firestore.Exclude;
-import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import java.util.ArrayList;
 
@@ -22,6 +22,7 @@ public class User {
     //contains the input data of user
     //the password he is currently clicking
     private ArrayList<Integer> currentInput;
+    private String currentPasswordGenerated;
 
     //when true we register the new informations in "passwordSaved" array
     private boolean isSavingPassword;
@@ -51,32 +52,45 @@ public class User {
     }
 
     /**
-     * @return true if the two passwords are equals
+     * Check wether the sequence of image selected is the same as registered in the test
+     * @return true if the two sequence are equals
      */
     public boolean checkPassword(Context context)
     {
         boolean check=false;
-        ArrayList<Integer> passwordSaved= getCurrentTest().getPasswordSaved();
-        if(passwordSaved.size()== currentInput.size() &&
-                passwordSaved.equals(currentInput))
+        if(getCurrentTest().getPasswordSaved().equals(currentInput))
         {
             check=true;
-            getCurrentTest().addSuccess();
+            getCurrentTest().getStatsImagePassword().addSuccess();
 
         }
         else
         {
-            getCurrentTest().addFailure();
+            getCurrentTest().getStatsImagePassword().addFailure();
 
-            //if failure we have to reschedule the alarms from the last one
-            int newNumOfTry=getCurrentTest().getNumOfTry()-1;
-            if(newNumOfTry>=0)
-            {
-                getCurrentTest().setNumOfTry(newNumOfTry);
-                NotificationAlarm.createAlarmFrom(context,documentName,newNumOfTry);
-            }
+            rescheduleAlarm(context);
         }
         return  check;
+    }
+
+
+    /**
+     * Compare the password generate with the policy to a input string by user in an editText
+     * @param inputOfUser the input string to compare with
+     * @return true if the password are equals
+     */
+    public boolean checkPassword(String inputOfUser)
+    {
+        boolean check=false;
+        if(inputOfUser.equals(getCurrentTest().getPasswordGenerated()))
+        {
+            check=true;
+            getCurrentTest().getStatCharacterPassword().addSuccess();
+        }else
+        {
+            getCurrentTest().getStatCharacterPassword().addFailure();
+        }
+        return check;
     }
 
     public void addSymbolToPassword(Integer symbol)
@@ -86,10 +100,10 @@ public class User {
     }
 
     //When we finish to register a new Test This method is called
-    public void addNewTest(Context context)
+    public void addNewTest()
     {
 
-        listTest.add(new Test(PasswordPolicyDialog.getChosenPolicy(),currentInput,context));
+        listTest.add(new Test(PasswordPolicyDialog.getChosenPolicy(),currentInput,currentPasswordGenerated));
 
         //we set tne number of try to 1, we know the tests begin for this user
         getCurrentTest().nextTry();
@@ -131,13 +145,22 @@ public class User {
     }
 
     @Exclude
-    public boolean isSavingPassword() {
+    public boolean isRegisteringTest() {
         return isSavingPassword&&!isTrying;
     }
 
     @Exclude
     public ArrayList<Integer> getCurrentInput() {
         return currentInput;
+    }
+
+    @Exclude
+    public String getCurrentPasswordGenerated() {
+        return currentPasswordGenerated;
+    }
+
+    public void setCurrentPasswordGenerated(String currentPasswordGenerated) {
+        this.currentPasswordGenerated = currentPasswordGenerated;
     }
 
     /**
@@ -157,6 +180,17 @@ public class User {
     //seem to be useless, but if yu want to save the listTest Field , firestore need to have an acess to it
     public ArrayList<Test> getListTest() {
         return listTest;
+    }
+
+    private void rescheduleAlarm(Context context)
+    {
+        //if failure we have to reschedule the alarms from the last one
+        int newNumOfTry=getCurrentTest().getNumOfTry()-1;
+        if(newNumOfTry>=0)
+        {
+            getCurrentTest().setNumOfTry(newNumOfTry);
+            NotificationAlarm.createAlarmFrom(context,documentName,newNumOfTry);
+        }
     }
 }
 

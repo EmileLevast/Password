@@ -14,6 +14,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import static com.example.levast.password.MainActivity.user;
 
 
 /**
@@ -30,7 +31,6 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, Intent intent) {
 
-        Log.w("msg","alarm fire:"+intent);
         firestoreDb=FirebaseFirestore.getInstance();
         firestoreDb.collection(MainActivity.COLLECTION_USERS).document(intent.getStringExtra(NotificationAlarm.INTENT_LEVAST_PASSWORD_ID_USER))
                 .get()
@@ -38,16 +38,19 @@ public class AlarmReceiver extends BroadcastReceiver {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         userToNotify=documentSnapshot.toObject(User.class);
-                        Log.w("msg","notif sent:"+ (userToNotify != null ? userToNotify.getCurrentTest().getNumOfTry() : -1));
 
-                        //we send a notif
-                        sendNotification(context);
+                        if(user!=null && user.getCurrentTest()!=null)
+                        {
+                            //we send a notif
+                            sendNotification(context);
 
-                        //user go to nextTry
-                        userToNotify.getCurrentTest().nextTry();
+                            //user go to nextTry
+                            userToNotify.getCurrentTest().nextTry();
 
-                        firestoreDb.collection(MainActivity.COLLECTION_USERS).document(userToNotify.getDocumentName())
-                                .update("listTest",userToNotify.getListTest());
+                            firestoreDb.collection(MainActivity.COLLECTION_USERS).document(userToNotify.getDocumentName())
+                                    .update("listTest",userToNotify.getListTest());
+                        }
+
                     }
                 });
 

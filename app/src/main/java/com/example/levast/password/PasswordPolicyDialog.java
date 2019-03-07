@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
-import android.widget.Toast;
+import android.view.View;
 
 import java.util.ArrayList;
 
@@ -22,6 +24,8 @@ public class PasswordPolicyDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+
 
         //we search in the preference what is the current choice of the user, let display the item already checked
         itemChecked=new boolean[GeneratePassword.keyPasswordPolicy.length];
@@ -45,12 +49,13 @@ public class PasswordPolicyDialog extends DialogFragment {
 
                         if(dialog!=null)
                         {
-                            if(b && checkAtLeastOneItemSelected())
+                            if(b || checkAtLeastOneItemSelected())
                             {
                                 dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
                             }
                             else
                             {
+                                Snackbar.make(MainActivity.snackBar,"Select at least one item", BaseTransientBottomBar.LENGTH_LONG).show();
                                 dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
                             }
                         }
@@ -76,23 +81,6 @@ public class PasswordPolicyDialog extends DialogFragment {
 
         return builder.create();
     }
-
-
-   /* @Override
-    public void onDismiss(DialogInterface dialog) {
-
-
-
-        if(checkAtLeastOneItemSelected())
-        {
-            super.onDismiss(dialog);
-        }
-        else
-        {
-            Toast.makeText(getContext(),"Error: choose at least 1 item",Toast.LENGTH_LONG).show();
-            show(getFragmentManager(),"dialogPolicy");
-        }
-    }*/
 
     private boolean checkAtLeastOneItemSelected()
     {

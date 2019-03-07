@@ -2,7 +2,9 @@ package com.example.levast.password;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,18 +40,22 @@ public final class GeneratePassword {
      * @param sequence contains the number of the position of the chosen images
      * @return an integer corresponding to this sqce
      */
-    public static long seqceInputToInt(List<Integer> sequence)
+    public static BigInteger seqceInputToInt(List<Integer> sequence)
     {
 
-        long res=0;
-
+        //we  use a big integer because if the user choose
+        BigInteger res=BigInteger.valueOf(0L);
+        Log.w("msg","=======================");
         //NBR_PAGES== S
         for(int i=0;i<sequence.size();i++)
         {
+            Log.w("msg","e["+i+"]="+(sequence.get(i)+1));
             //we add 1 else the first img (==0) has no impact on the password
-            res+=(sequence.get(i)+1)*Math.pow(MainActivity.NBR_COLUMN*MainActivity.NBR_LINE,i);
+            //res+=((double)(sequence.get(i)+1))*Math.pow(MainActivity.NBR_COLUMN*MainActivity.NBR_LINE,i);
+            res=res.add(BigInteger.valueOf((long) ((sequence.get(i)+1)*Math.pow(MainActivity.NBR_COLUMN*MainActivity.NBR_LINE,i))));
+            Log.w("msg","\tPN:"+res);
         }
-        //res == PN
+        Log.w("msg","PN:"+res);
         return res;
     }
 
@@ -57,24 +63,23 @@ public final class GeneratePassword {
      * @param nbr PN calculated with seqceInputToInt
      *
      */
-    public static List<Character> intToSqceSymbol(long nbr,Context context)
+    public static List<Character> intToSqceSymbol(BigInteger nbr,Context context)
     {
         //Z
         ArrayList<Character> serieSymbol=new ArrayList<>(0);
         ArrayList<Character> symbolAvailable=loadAllUsedCharacters(context);
 
-        //Q
-        long varTempo=nbr;
-
-
         //M
         int nbrCharAvailable= symbolAvailable.size();
 
 
-        while (varTempo>0)
+
+        //if the bigInteger is positiv
+        while (nbr.compareTo(BigInteger.ZERO)==1)
         {
-            serieSymbol.add(symbolAvailable.get((int) (varTempo%nbrCharAvailable)));
-            varTempo/=nbrCharAvailable;
+            serieSymbol.add(symbolAvailable.get(nbr.mod(BigInteger.valueOf(nbrCharAvailable)).intValue()));
+            nbr=nbr.divide(BigInteger.valueOf(nbrCharAvailable));
+
         }
 
         return serieSymbol;
@@ -97,10 +102,10 @@ public final class GeneratePassword {
         return listSymbolAvailable;
     }
 
-    static String getPasswordAsText(Context context)
+    static String getPasswordAsText(Context context,ArrayList<Integer> sequence)
     {
         String text="";
-        List<Character> password= intToSqceSymbol(seqceInputToInt(MainActivity.user.getCurrentInput()),context);
+        List<Character> password= intToSqceSymbol(seqceInputToInt(sequence),context);
         for(Character elt: password)
         {
             text+=elt;

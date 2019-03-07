@@ -28,21 +28,30 @@
 
             <TextView
                 style="@style/boutonHomePage"
-                android:id="@+id/textResult"
+                android:id="@+id/textResultTitle"
                 android:background="@color/transparent"
                 android:textColor="@color/strokeButton"
-                android:text="Your Sequence"
+                android:text="Your Password:"
                 android:layout_alignParentTop="true"/>
+
+            <TextView
+                style="@style/boutonHomePage"
+                android:id="@+id/passwordResult"
+                android:layout_centerInParent="true"
+                android:layout_below="@id/textResultTitle"
+                android:textColor="@color/strokeButton"
+                android:text="No Password"/>
 
             <GridView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/textResult"
                 android:layout_gravity="center"
+                android:layout_below="@id/passwordResult"
                 android:numColumns="4"
                 android:scrollbars="vertical"
                 android:id="@+id/gridViewResult">
             </GridView>
+
 
             <Button
                 android:id="@+id/GotoHomePageButton"
@@ -61,6 +70,12 @@
             android:layout_height="match_parent"
             android:visibility="gone"
            >
+
+            <View
+                android:id="@+id/scnackBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
 
             <Button
                 android:id="@+id/loginButton"
@@ -124,6 +139,29 @@
 
 
                 />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/pageTestCharacter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/rememberPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:hint="Enter password"/>
+
+            <Button
+                style="@style/boutonHomePage"
+                android:layout_below="@id/rememberPassword"
+                android:layout_alignEnd="@id/rememberPassword"
+                android:layout_alignStart="@id/rememberPassword"
+                android:onClick="checkPasswordCharOnClick"
+                android:text="Verify"/>
 
         </RelativeLayout>
 

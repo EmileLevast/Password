@@ -11,24 +11,23 @@ import android.content.res.Resources;
 
 import android.os.Build;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 
-import com.example.levast.password.Database.AppDataBase;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     Database
      */
     public static User user;
-    public AppDataBase roomDB;
+
 
     /*
     Firestore
@@ -70,14 +69,17 @@ public class MainActivity extends AppCompatActivity {
     private CustomView customViewResult;
     private GridView gridView;
     private GridView gridViewResult;
+    public static View snackBar;
+    public EditText rememberPasswordView;
+    public TextView textPasswordGenerated;
 
     /*
     Manage the order of the views
      */
     private Container<List<ImageLegend>> containerPagePictures;
-    private ArrayList<List<ImageLegend>> allPagesImages;
     private int idHomePage;
     private int idPageImage;
+    private int idTestCharacterPage;
     private int idResultPage;
     private int idWaitPage;
 
@@ -103,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         createNotificationChannel();
 
         setContentView(R.layout.activity_main);
-        NBR_PAGE=ImageLegend.listTheme.length;
+        NBR_PAGE=ImageLegend.allPagesImages.size();
 
 
         /*
@@ -111,18 +113,8 @@ public class MainActivity extends AppCompatActivity {
          */
         sharedPreferences=getSharedPreferences(MainActivity.NAME_SHARED_PREFERENCE, Context.MODE_PRIVATE);
 
-        /*
-        Load data from database
-         */
-        roomDB =AppDataBase.getDataBase(this);
-        //on cree notre objet aui va contenir nos mot de passes
-        /*user = roomDB.userDao().loadFirstRow();
-        if(user==null)
-        {
-            user=new User();
-            //we insert here because the service may use some fields
-            roomDB.userDao().insertAll(user);
-        }*/
+
+
 
         /*
         intiate Firestore
@@ -142,9 +134,7 @@ public class MainActivity extends AppCompatActivity {
         /*
         Prepare All the graphics components
          */
-        //we launch the container with all the pictures
-        allPagesImages=loadAllImagefromDb();
-        containerPagePictures=new Container<>(allPagesImages);
+        containerPagePictures=new Container<>(ImageLegend.allPagesImages);
 
         //our custom view to display the image in a imageView
         customView=new CustomView(this, containerPagePictures.getCurrentItem());
@@ -174,12 +164,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //get the view with their id
+        snackBar=findViewById(R.id.scnackBar);
+        rememberPasswordView=findViewById(R.id.rememberPassword);
+        textPasswordGenerated=findViewById(R.id.passwordResult);
+
         //we add the view to the ContainerView in the order to organize the aparition of the different windows
         idHomePage=R.id.homePage;
         idPageImage=R.id.gridView;
         idResultPage=R.id.resultPage;
         idWaitPage=R.id.waitPage;
-        containerView=new ContainerView(this,idWaitPage,idHomePage,idPageImage,idResultPage);
+        idTestCharacterPage =R.id.pageTestCharacter;
+        containerView=new ContainerView(this,idWaitPage,idHomePage,idPageImage,idResultPage,idTestCharacterPage);
 
         containerView.printView(idWaitPage);
 
@@ -191,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void createPasswordClick(View v)
     {
-        printPageImage(idPageImage);
+        printPageImage();
         user.logIn();
     }
 
@@ -208,8 +204,26 @@ public class MainActivity extends AppCompatActivity {
 
     public void RegisterClick(View v)
     {
-        printPageImage(idPageImage);
+        printPageImage();
         user.register();
+    }
+
+    /**
+     * Call when the user want to see if he can remember his password as a char sequence
+     * @param view
+     */
+    public void checkPasswordCharOnClick(View view) {
+        String inputCharPassword=rememberPasswordView.getText().toString();
+        String toPrint=user.checkPassword(inputCharPassword)?"Correct":"Incorrect";
+        toPrint+=" Password";
+
+        Snackbar.make(snackBar,toPrint,Snackbar.LENGTH_SHORT).show();
+
+        firestoreDB.collection(COLLECTION_USERS).document(user.getDocumentName())
+                .update("listTest",user.getListTest());
+
+        printPageImage();
+
     }
 
     /**
@@ -219,38 +233,25 @@ public class MainActivity extends AppCompatActivity {
     {
         String toPrint;
 
+        user.setCurrentPasswordGenerated(GeneratePassword.getPasswordAsText(this,user.getCurrentInput()));
         //the user clicked on Register
-        if(user.isSavingPassword())
+        if(user.isRegisteringTest())
         {
 
-            toPrint="New Password Saved";
-            //we insert the id of the user to load him in the service
-            user.addNewTest(this);
+            toPrint="New Test Regsitered";
 
-            //we save the number of sentences for this test
-            //user.getCurrentTest().setNbrSentenceForSequence(NumberSentencesDialog.NBR_SENTENCES);
+            //we add a new test to his list of tests
+            user.addNewTest();
 
-            //we say to the service to begin the tests
-            //user.nextTry();//his field nextTry is set to 1, thanks to that we know the tests begin
             NotificationAlarm.createAlarm(this,user.getDocumentName());
-            //printDataAboutPassword();
-
         }
         //user clicked on the notification to test his memory
         else if(user.isTrying())
         {
-            if(user.checkPassword(this))
-            {
-                toPrint="Correct Password";
-            }
-            else
-            {
-                toPrint="Incorrect Password";
+            toPrint=user.checkPassword(this)?"Correct":"Incorrect";
+            toPrint+=" Password";
 
-            }
             NumberSentencesDialog.NBR_SENTENCES=sharedPreferences.getInt(NumberSentencesDialog.KEY_NUMBER_SENTENCES,NumberSentencesDialog.DEFAULT_NUMBER_SENTENCES);
-
-            toPrint+=" \nNbr Failure: "+user.getCurrentTest().getFailure()+" \nNbr Success:"+user.getCurrentTest().getSuccess();
         }
         //user clicked on LogIn to get a password in Clipboard
         else
@@ -258,25 +259,23 @@ public class MainActivity extends AppCompatActivity {
             toPrint="Password Saved in the ClipBoard";
 
             ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("Password", GeneratePassword.getPasswordAsText(this));
+            ClipData clip = ClipData.newPlainText("Password", user.getCurrentPasswordGenerated());
             clipboard.setPrimaryClip(clip);
         }
 
-        //roomDB.userDao().insertAll(user);
         firestoreDB.collection(COLLECTION_USERS).document(user.getDocumentName())
                 .set(user);
 
         printResultSequence();
 
         //we check or save the password and go to the home page
-        Toast.makeText(getApplicationContext(),toPrint,Toast.LENGTH_LONG).show();
-        //containerView.printView(R.id.homePage);
+        Snackbar.make(snackBar,toPrint,Snackbar.LENGTH_SHORT).show();
         containerPagePictures.init();
     }
 
-    private void printPageImage(int idPageToPrint)
+    private void printPageImage()
     {
-        containerView.printView(idPageToPrint);
+        containerView.printView(idPageImage);
         setCustomView();
     }
 
@@ -288,17 +287,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private ArrayList<List<ImageLegend>> loadAllImagefromDb()
-    {
-        ArrayList<List<ImageLegend>> listPage=new ArrayList<>(0);
 
-        for(String theme: ImageLegend.listTheme)
-        {
-            listPage.add(roomDB.imageLegendDao().getAllImageTheme(theme));
-        }
-
-        return listPage;
-    }
 
 
     public void showPolicyDialog(View v)
@@ -320,8 +309,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void printResultSequence()
     {
-        customViewResult=new CustomView(this,ImageLegend.getElementWithId(allPagesImages,user.getCurrentInput()));
+        customViewResult=new CustomView(this,ImageLegend.getElementWithId(ImageLegend.allPagesImages,user.getCurrentInput()));
         gridViewResult.setAdapter(customViewResult);
+        textPasswordGenerated.setText(user.getCurrentPasswordGenerated());
         containerView.printView(idResultPage);
     }
 
@@ -335,8 +325,8 @@ public class MainActivity extends AppCompatActivity {
         if(pageToLaunch==SHOW_LOGIN)
         {
             NumberSentencesDialog.NBR_SENTENCES=user.getCurrentTest().getNbrSentenceForSequence();
-            printPageImage(idPageImage);
-
+            //printPageImage(idPageImage);
+            containerView.printView(idTestCharacterPage);
             //the user is currently testing his memory
             user.doTry();
 
@@ -367,6 +357,8 @@ public class MainActivity extends AppCompatActivity {
     private void downloadUser()
     {
         //we try to get the document corresponding to the user
+        //I didn't understand why yet, but when there is no corresponding document sometimes it throw exception
+        //sometimes user is null in OnSuccess Method
         try
         {
             firestoreDB.collection(COLLECTION_USERS).document(sharedPreferences.getString(KEY_USER_DOCUMENT_NAME,""))
@@ -378,27 +370,36 @@ public class MainActivity extends AppCompatActivity {
                             //we download the user
                             user=documentSnapshot.toObject(User.class);
 
-
+                            if(user==null)
+                            {
+                                CreateAndInsertUserInFirestore();
+                            }
+                            //if the activity is launched by an intent (thanks to our notification) we have to redirect the user on the right page
+                            updateWithIntent(getIntent());
                         }
                     });
 
         }catch (IllegalArgumentException exception)
         {
-            //if there is no such document
-            //we upload his document
-            //we create it with an id auto-generated
-            DocumentReference documentReference=firestoreDB.collection(COLLECTION_USERS).document();
-            user=new User(documentReference.getId());
-            documentReference.set(user);
+            CreateAndInsertUserInFirestore();
 
-            SharedPreferences.Editor editor=sharedPreferences.edit();
-            editor.putString(KEY_USER_DOCUMENT_NAME,user.getDocumentName());
-            editor.apply();
+            //if the activity is launched by an intent (thanks to our notification) we have to redirect the user on the right page
+            updateWithIntent(getIntent());
         }
+    }
 
-        //if the activity is launched by an intent (thanks to our notification) we have to redirect the user on the right page
-        updateWithIntent(getIntent());
+    private void CreateAndInsertUserInFirestore()
+    {
+        //if there is no such document
+        //we upload his document
+        //we create it with an id auto-generated
+        DocumentReference documentReference=firestoreDB.collection(COLLECTION_USERS).document();
+        user=new User(documentReference.getId());
+        documentReference.set(user);
 
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.putString(KEY_USER_DOCUMENT_NAME,user.getDocumentName());
+        editor.apply();
     }
 
     public void createNotificationChannel() {
@@ -417,28 +418,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void printDataAboutPassword()
-    {
-        Log.w("msg","=====Password Saved=====\n");
-        for(int i=0;i<user.getCurrentInput().size();i++)
-        {
-            Log.w("msg","e["+i+"]: "+user.getCurrentInput().get(i));
-        }
-
-        long PN=GeneratePassword.seqceInputToInt(user.getCurrentInput());
-        Log.w("msg","PN:"+PN);
-
-        List<Character> password=GeneratePassword.intToSqceSymbol(PN,this);
-        for(int i=0;i<password.size();i++)
-        {
-            Log.w("msg","Z["+i+"]: "+password.get(i));
-        }
-        Log.w("msg","========================\n");
-    }
 
 
     public void showNumberSentencesDialog(View view) {
         NumberSentencesDialog numberSentencesDialog=new NumberSentencesDialog();
         numberSentencesDialog.show(getFragmentManager(),"NumberSentencesDialog");
     }
+
+
 }
