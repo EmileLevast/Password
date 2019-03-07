@@ -8,6 +8,9 @@ public class StatsTest {
     private int success;
     private int failure;
 
+    //how many time you remember your password but reset for each failure
+    private int currentSuite;
+
     public int getSuccess() {
         return success;
     }
@@ -19,10 +22,16 @@ public class StatsTest {
     public void addFailure()
     {
         failure++;
+        currentSuite=0;
     }
 
     public void addSuccess()
     {
         success++;
+        currentSuite++;
+    }
+
+    public int getCurrentSuite() {
+        return currentSuite;
     }
 }

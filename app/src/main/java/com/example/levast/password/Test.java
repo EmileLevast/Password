@@ -49,7 +49,7 @@ public class Test {
     }
 
     public Test(ArrayList<String> policy, ArrayList<Integer> passwordSaved,String passwordGenerated) {
-        this.nbrSentenceForSequence = passwordSaved.size()/ImageLegend.listTheme.length;
+        this.nbrSentenceForSequence = passwordSaved.size()/ImageLegend.allPagesImages.size();
         this.passwordSaved = new ArrayList<>(passwordSaved);
         this.policy = policy;
         this.passwordGenerated=passwordGenerated;

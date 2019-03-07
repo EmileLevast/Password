@@ -214,8 +214,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void checkPasswordCharOnClick(View view) {
         String inputCharPassword=rememberPasswordView.getText().toString();
-        String toPrint=user.checkPassword(inputCharPassword)?"Correct":"Incorrect";
-        toPrint+=" Password";
+        String toPrint=constructStringXpWin(user.checkPassword(inputCharPassword));
 
         Snackbar.make(snackBar,toPrint,Snackbar.LENGTH_SHORT).show();
 
@@ -248,8 +247,7 @@ public class MainActivity extends AppCompatActivity {
         //user clicked on the notification to test his memory
         else if(user.isTrying())
         {
-            toPrint=user.checkPassword(this)?"Correct":"Incorrect";
-            toPrint+=" Password";
+            toPrint=constructStringXpWin(user.checkPassword(this));
 
             NumberSentencesDialog.NBR_SENTENCES=sharedPreferences.getInt(NumberSentencesDialog.KEY_NUMBER_SENTENCES,NumberSentencesDialog.DEFAULT_NUMBER_SENTENCES);
         }
@@ -271,6 +269,15 @@ public class MainActivity extends AppCompatActivity {
         //we check or save the password and go to the home page
         Snackbar.make(snackBar,toPrint,Snackbar.LENGTH_SHORT).show();
         containerPagePictures.init();
+    }
+
+    private String constructStringXpWin(int xpWin)
+    {
+        String toPrint=xpWin>=0?"You Win ":"You lose ";
+
+        toPrint+=xpWin+" XP";
+
+        return toPrint;
     }
 
     private void printPageImage()

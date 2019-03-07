@@ -33,6 +33,8 @@ public class User {
     //contain the name of the document that refer to the user in Firestore
     private String documentName;
 
+    private Level level;
+
     public User() {
         init();
     }
@@ -40,6 +42,7 @@ public class User {
     public User(String documentName) {
         this.documentName=documentName;
         listTest=new ArrayList<>(0);
+        level=new Level();
         init();
     }
 
@@ -55,7 +58,7 @@ public class User {
      * Check wether the sequence of image selected is the same as registered in the test
      * @return true if the two sequence are equals
      */
-    public boolean checkPassword(Context context)
+    public int checkPassword(Context context)
     {
         boolean check=false;
         if(getCurrentTest().getPasswordSaved().equals(currentInput))
@@ -70,7 +73,8 @@ public class User {
 
             rescheduleAlarm(context);
         }
-        return  check;
+
+        return level.calculateXp(getCurrentTest(),getCurrentTest().getStatsImagePassword(),check);
     }
 
 
@@ -79,10 +83,10 @@ public class User {
      * @param inputOfUser the input string to compare with
      * @return true if the password are equals
      */
-    public boolean checkPassword(String inputOfUser)
+    public int checkPassword(String inputOfUser)
     {
         boolean check=false;
-        if(inputOfUser.equals(getCurrentTest().getPasswordGenerated()))
+        if((getCurrentTest().getPasswordGenerated()).equals(inputOfUser))
         {
             check=true;
             getCurrentTest().getStatCharacterPassword().addSuccess();
@@ -90,7 +94,8 @@ public class User {
         {
             getCurrentTest().getStatCharacterPassword().addFailure();
         }
-        return check;
+
+        return level.calculateXp(getCurrentTest(),getCurrentTest().getStatCharacterPassword(),check);
     }
 
     public void addSymbolToPassword(Integer symbol)
@@ -161,6 +166,10 @@ public class User {
 
     public void setCurrentPasswordGenerated(String currentPasswordGenerated) {
         this.currentPasswordGenerated = currentPasswordGenerated;
+    }
+
+    public Level getLevel() {
+        return level;
     }
 
     /**
