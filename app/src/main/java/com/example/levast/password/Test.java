@@ -21,14 +21,6 @@ public class Test {
     private final String CHARACTER_PASSWORD="CHARACTER_PASSWORD";
     private final String IMAGE_PASSWORD="IMAGE_PASSWORD";
 
-    /*//indicate the nbr of failure and success of the user for this test
-    private int success;
-    private int failure;
-
-    private int successChar;
-    private int failureChar;
-*/
-
     //contain the stats for a password with image and the passyord with characters
     private HashMap<String,StatsTest> listStat;
 
@@ -53,6 +45,7 @@ public class Test {
         this.passwordSaved = new ArrayList<>(passwordSaved);
         this.policy = policy;
         this.passwordGenerated=passwordGenerated;
+
 
         listStat=new HashMap<>(0);
         listStat.put(CHARACTER_PASSWORD,new StatsTest());
@@ -108,50 +101,5 @@ public class Test {
     public HashMap<String, StatsTest> getListStat() {
         return listStat;
     }
-
-    /*public int getSuccess() {
-        return success;
-    }
-
-    public void setSuccess(int success) {
-        this.success = success;
-    }
-
-    public void addSuccess()
-    {
-        success++;
-    }
-
-    public int getFailure() {
-        return failure;
-    }
-
-    public void setFailure(int failure) {
-        this.failure = failure;
-    }
-
-    public void addFailure()
-    {
-        failure++;
-    }
-
-
-    public void addFailureChar()
-    {
-        failureChar++;
-    }
-
-    public void addSuccessChar()
-    {
-        successChar++;
-    }
-
-    public int getSuccessChar() {
-        return successChar;
-    }
-
-    public int getFailureChar() {
-        return failureChar;
-    }*/
 
 }

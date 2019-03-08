@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     /*
     Database
      */
-    public static User user;
+    private User user;
 
 
     /*
@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textPasswordGenerated;
     private ProgressBar expProgressBar;
     private TextView textViewLevel;
+    private EditText editTextNametest;
 
     /*
     Manage the order of the views
@@ -95,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
     Intents
      */
     public final static String CHANEl_ID="NOTIFICATION_TEST";
+    //key:indicates the name of the test we are going to try
+    public final static String INTENT_LEVAST_PASSWORD_NAME_TEST ="INTENT_LEVAST_PASSWORD_NAME_TEST";
     //key:indicates to the activity which page we want to show
     public final static String INTENT_LEVAST_PASSWORD_ID_PAGE ="INTENT_LEVAST_PASSWORD_ID_PAGE";
     //value:used to know which page to show on an intent received
@@ -178,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
         textPasswordGenerated=findViewById(R.id.passwordResult);
         textViewLevel=findViewById(R.id.textViewLevel);
         expProgressBar=findViewById(R.id.expProgressbar);
+        editTextNametest=findViewById(R.id.editTextNameTest);
 
         //we add the view to the ContainerView in the order to organize the aparition of the different windows
         idHomePage=R.id.homePage;
@@ -202,20 +206,38 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void generateTestClick(View view) {
-
-        user.register();
-        Random rand=new Random();
-        for(int i=0;i<NumberSentencesDialog.NBR_SENTENCES*NBR_PAGE;i++)
+        if(checkNameNewTestValid())
         {
-            user.addSymbolToPassword(rand.nextInt(NBR_COLUMN*NBR_LINE));
+            user.register();
+            Random rand=new Random();
+            for(int i=0;i<NumberSentencesDialog.NBR_SENTENCES*NBR_PAGE;i++)
+            {
+                user.addSymbolToPassword(rand.nextInt(NBR_COLUMN*NBR_LINE));
+            }
+            sequenceCompleted();
         }
-        sequenceCompleted();
     }
 
     public void RegisterClick(View v)
     {
-        printPageImage();
-        user.register();
+        if(checkNameNewTestValid())
+        {
+            printPageImage();
+            user.register();
+        }
+    }
+
+    //check if the current string entered in the edittext is valid to create a new test with
+    private boolean checkNameNewTestValid()
+    {
+        boolean validName=true;
+        if(!user.isValidNameForNewTest(editTextNametest.getText().toString()))
+        {
+            validName=false;
+            Snackbar.make(snackBar,"Error: please enter valid name for your Test",Snackbar.LENGTH_SHORT);
+        }
+
+        return validName;
     }
 
     /**
@@ -224,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void checkPasswordCharOnClick(View view) {
         String inputCharPassword=rememberPasswordView.getText().toString();
-        String toPrint=constructStringXpWin(user.checkPassword(inputCharPassword));
+        String toPrint=constructStringXpWin(user.checkPassword(inputCharPassword,this));
 
         Snackbar.make(snackBar,toPrint,Snackbar.LENGTH_SHORT).show();
 
@@ -247,12 +269,20 @@ public class MainActivity extends AppCompatActivity {
         if(user.isRegisteringTest())
         {
 
-            toPrint="New Test Regsitered";
+
+            //if we achieve to add our new test then we schedule the alarm
+            if(user.addNewTest(editTextNametest.getText().toString()))
+            {
+                toPrint="New Test Registered";
+                NotificationAlarm.createAlarm(this,user.getDocumentName(),user.getCurrentTestName());
+            }
+            else
+            {
+                toPrint="Error:Name for test is Not Valid";
+            }
+
 
             //we add a new test to his list of tests
-            user.addNewTest();
-
-            NotificationAlarm.createAlarm(this,user.getDocumentName());
         }
         //user clicked on the notification to test his memory
         else if(user.isTrying())
@@ -340,13 +370,17 @@ public class MainActivity extends AppCompatActivity {
     private void updateWithIntent(Intent intent)
     {
         int pageToLaunch=intent.getIntExtra(INTENT_LEVAST_PASSWORD_ID_PAGE,-1);
-        if(pageToLaunch==SHOW_LOGIN)
+        if(pageToLaunch==SHOW_LOGIN &&
+                //we found the corresponding test and we add the test in currenttest
+                user.initCurrentTest(intent.getStringExtra(INTENT_LEVAST_PASSWORD_NAME_TEST)))
         {
-            NumberSentencesDialog.NBR_SENTENCES=user.getCurrentTest().getNbrSentenceForSequence();
-            //printPageImage(idPageImage);
-            containerView.printView(idTestCharacterPage);
-            //the user is currently testing his memory
-            user.doTry();
+                //we set the number of sentence with the number of sentences for this test
+                NumberSentencesDialog.NBR_SENTENCES=user.getCurrentTest().getNbrSentenceForSequence();
+                containerView.printView(idTestCharacterPage);
+                //the user is currently testing his memory
+                user.doTry();
+
+                Snackbar.make(snackBar,"Sorry: can't find this test",Snackbar.LENGTH_SHORT);
 
         }else
         {

@@ -2,11 +2,11 @@ package com.example.levast.password;
 
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.firebase.firestore.Exclude;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Levast on 05.02.2019.
@@ -17,7 +17,7 @@ public class User {
 
 
     //contain all the tests of the user and the last test in the list is the current one
-    private ArrayList<Test> listTest;
+    private HashMap<String,Test> listTest;
 
     //contains the input data of user
     //the password he is currently clicking
@@ -35,13 +35,16 @@ public class User {
 
     private Level level;
 
+    //each we do a try we get the name of the test we want via the intent in the notification and we save this test
+    private String currentTestName;
+
     public User() {
         init();
     }
 
     public User(String documentName) {
         this.documentName=documentName;
-        listTest=new ArrayList<>(0);
+        listTest=new HashMap<>(0);
         level=new Level();
         init();
     }
@@ -71,7 +74,11 @@ public class User {
         {
             getCurrentTest().getStatsImagePassword().addFailure();
 
-            rescheduleAlarm(context);
+            //if we didn't fail the test for character (this mean alarm have not already been rescheduled) we reschedule alarm because we do an error here
+            if(getCurrentTest().getStatCharacterPassword().getCurrentSuite()!=0)
+            {
+                rescheduleAlarm(context);
+            }
         }
 
         return level.calculateXp(getCurrentTest(),getCurrentTest().getStatsImagePassword(),check);
@@ -83,7 +90,7 @@ public class User {
      * @param inputOfUser the input string to compare with
      * @return true if the password are equals
      */
-    public int checkPassword(String inputOfUser)
+    public int checkPassword(String inputOfUser,Context context)
     {
         boolean check=false;
         if((getCurrentTest().getPasswordGenerated()).equals(inputOfUser))
@@ -93,6 +100,8 @@ public class User {
         }else
         {
             getCurrentTest().getStatCharacterPassword().addFailure();
+            rescheduleAlarm(context);
+
         }
 
         return level.calculateXp(getCurrentTest(),getCurrentTest().getStatCharacterPassword(),check);
@@ -105,13 +114,20 @@ public class User {
     }
 
     //When we finish to register a new Test This method is called
-    public void addNewTest()
+    public boolean addNewTest(String nameTest)
     {
+        boolean insertSucceed=false;
 
-        listTest.add(new Test(PasswordPolicyDialog.getChosenPolicy(),currentInput,currentPasswordGenerated));
+        if(isValidNameForNewTest(nameTest))
+        {
+            insertSucceed=true;
+            Test testAdded=new Test(PasswordPolicyDialog.getChosenPolicy(),currentInput,currentPasswordGenerated);
+            testAdded.nextTry();
+            listTest.put(nameTest,testAdded);
+            currentTestName=nameTest;
+        }
 
-        //we set tne number of try to 1, we know the tests begin for this user
-        getCurrentTest().nextTry();
+        return insertSucceed;
     }
 
     public void logIn()
@@ -128,6 +144,12 @@ public class User {
         isTrying=false;
         //reset the stats
         currentInput.clear();
+    }
+
+    //return true if the key is not already present and not null
+    public boolean isValidNameForNewTest(String nameNewTest)
+    {
+        return !nameNewTest.isEmpty()&&!listTest.containsKey(nameNewTest);
     }
 
     /**
@@ -179,15 +201,31 @@ public class User {
     @Exclude
     public Test getCurrentTest()
     {
-       //There are at least one Test
-        if(listTest.isEmpty())
-            return null;
+       return listTest.get(currentTestName);
+    }
 
-        return listTest.get(listTest.size()-1);
+    @Exclude Test getTestWithName(String nameTest)
+    {
+        return listTest.get(nameTest);
+    }
+
+    @Exclude
+    public String getCurrentTestName() {
+        return currentTestName;
+    }
+
+    public boolean initCurrentTest(String name) {
+        boolean testFound=false;
+        if(listTest.containsKey(name))
+        {
+            testFound=true;
+            currentTestName=name;
+        }
+        return testFound;
     }
 
     //seem to be useless, but if yu want to save the listTest Field , firestore need to have an acess to it
-    public ArrayList<Test> getListTest() {
+    public HashMap<String,Test> getListTest() {
         return listTest;
     }
 
@@ -198,7 +236,7 @@ public class User {
         if(newNumOfTry>=0)
         {
             getCurrentTest().setNumOfTry(newNumOfTry);
-            NotificationAlarm.createAlarmFrom(context,documentName,newNumOfTry);
+            NotificationAlarm.scheduleAlarmFrom(context,documentName,newNumOfTry,currentTestName);
         }
     }
 }
