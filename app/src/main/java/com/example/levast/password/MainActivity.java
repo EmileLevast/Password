@@ -15,11 +15,14 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -27,6 +30,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.core.RelationFilter;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 import java.util.Random;
@@ -70,8 +76,10 @@ public class MainActivity extends AppCompatActivity {
     private GridView gridView;
     private GridView gridViewResult;
     public static View snackBar;
-    public EditText rememberPasswordView;
-    public TextView textPasswordGenerated;
+    private EditText rememberPasswordView;
+    private TextView textPasswordGenerated;
+    private ProgressBar expProgressBar;
+    private TextView textViewLevel;
 
     /*
     Manage the order of the views
@@ -168,6 +176,8 @@ public class MainActivity extends AppCompatActivity {
         snackBar=findViewById(R.id.scnackBar);
         rememberPasswordView=findViewById(R.id.rememberPassword);
         textPasswordGenerated=findViewById(R.id.passwordResult);
+        textViewLevel=findViewById(R.id.textViewLevel);
+        expProgressBar=findViewById(R.id.expProgressbar);
 
         //we add the view to the ContainerView in the order to organize the aparition of the different windows
         idHomePage=R.id.homePage;
@@ -312,6 +322,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void goToHomePage(View view) {
         containerView.printView(idHomePage);
+        updateExpBarUser();
     }
 
     private void printResultSequence()
@@ -339,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
 
         }else
         {
-            containerView.printView(idHomePage);
+            goToHomePage(null);
         }
     }
 
@@ -432,5 +443,12 @@ public class MainActivity extends AppCompatActivity {
         numberSentencesDialog.show(getFragmentManager(),"NumberSentencesDialog");
     }
 
-
+    //called when we arrive on the homePage occured for exp Player
+    private void updateExpBarUser()
+    {
+        expProgressBar.setMax(user.getLevel().getCurrentLevel()*Level.XP_BY_LEVEL);
+        expProgressBar.setProgress(user.getLevel().getXp());
+        String str="Level "+user.getLevel().getCurrentLevel();
+        textViewLevel.setText(str);
+    }
 }

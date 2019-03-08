@@ -113,6 +113,36 @@
                 android:onClick="showNumberSentencesDialog"
                 android:text="Number of Sentences"/>
 
+            <ProgressBar
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:id="@+id/expProgressbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_toEndOf="@+id/SentencesButton"
+                android:layout_alignTop="@id/SentencesButton"
+                android:indeterminate="false"
+                android:progress="50"
+                android:max="100"
+                android:progressDrawable="@drawable/progressexpbar"
+                android:padding="2dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="15dp"/>
+
+               <TextView
+                  style="@style/textLevel"
+                   android:id="@+id/textViewLevel"
+                   android:text="0"
+                   android:layout_toEndOf="@id/SentencesButton"
+                   android:layout_alignTop="@id/SentencesButton"
+                   android:layout_alignParentBottom="true"
+                   android:layout_alignParentEnd="true"
+                   android:gravity="center"
+                   />
+
+
         </RelativeLayout>
 
         <RelativeLayout
@@ -136,8 +166,6 @@
                 android:layout_alignStart="@id/waitText"
                 android:layout_alignEnd="@id/waitText"
                 android:indeterminate="true"
-
-
                 />
 
         </RelativeLayout>

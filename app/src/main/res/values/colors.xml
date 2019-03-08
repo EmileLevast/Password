@@ -7,5 +7,9 @@
     <color name="transparent">#00000000</color>
     <color name="strokeButton">#FFFFFF</color>
     <color name="green">#00FF00</color>
-    <color name="black">#000000</color>
+    <color name="black">#330000</color>
+    <color name="expColorForeground">#ffcc00</color>
+    <color name="expColorExpCenter">#ffffaa</color>
+    <color name="expColorBackground">#ff7700</color>
+    <color name="expColorEndBackground">#ff3300</color>
 </resources>

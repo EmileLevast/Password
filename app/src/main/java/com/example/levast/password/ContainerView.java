@@ -39,4 +39,9 @@ public class ContainerView {
         listView.get(viewId).setVisibility(View.VISIBLE);
         index=viewId;
     }
+
+    public View getViewWithId(int viewId)
+    {
+        return listView.get(viewId);
+    }
 }
