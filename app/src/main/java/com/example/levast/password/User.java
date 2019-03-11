@@ -77,8 +77,11 @@ public class User {
             //if we didn't fail the test for character (this mean alarm have not already been rescheduled) we reschedule alarm because we do an error here
             if(getCurrentTest().getStatCharacterPassword().getCurrentSuite()!=0)
             {
+                getCurrentTest().previousTry();
                 rescheduleAlarm(context);
-            }
+            }else
+                //user go to nextTry if he succeed the two tests
+                getCurrentTest().nextTry();
         }
 
         return level.calculateXp(getCurrentTest(),getCurrentTest().getStatsImagePassword(),check);
@@ -100,8 +103,9 @@ public class User {
         }else
         {
             getCurrentTest().getStatCharacterPassword().addFailure();
+            //we failed so we go back to the preivous try
+            getCurrentTest().previousTry();
             rescheduleAlarm(context);
-
         }
 
         return level.calculateXp(getCurrentTest(),getCurrentTest().getStatCharacterPassword(),check);

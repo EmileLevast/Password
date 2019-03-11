@@ -41,9 +41,6 @@ public class AlarmReceiver extends BroadcastReceiver {
                             //we send a notif
                             sendNotification(context,nameTest);
 
-                            //user go to nextTry
-                            userToNotify.getTestWithName(nameTest).nextTry();
-
                             firestoreDb.collection(MainActivity.COLLECTION_USERS).document(userToNotify.getDocumentName())
                                     .update("listTest",userToNotify.getListTest());
                         }

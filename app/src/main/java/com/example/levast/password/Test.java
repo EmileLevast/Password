@@ -69,6 +69,15 @@ public class Test {
         this.numOfTry++;
     }
 
+    public void previousTry()
+    {
+        //if we are at try 1 we don't want to go to test zero
+        if(numOfTry>1)
+        {
+            numOfTry--;
+        }
+    }
+
     public int getNbrSentenceForSequence() {
         return nbrSentenceForSequence;
     }

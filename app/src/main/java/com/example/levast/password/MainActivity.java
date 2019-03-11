@@ -215,6 +215,9 @@ public class MainActivity extends AppCompatActivity {
                 user.addSymbolToPassword(rand.nextInt(NBR_COLUMN*NBR_LINE));
             }
             sequenceCompleted();
+        }else
+        {
+            Snackbar.make(snackBar,"Please choose a correct test name",Snackbar.LENGTH_SHORT);
         }
     }
 
