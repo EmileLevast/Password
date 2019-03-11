@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar expProgressBar;
     private TextView textViewLevel;
     private EditText editTextNametest;
+    private TextView textviewTestName;
 
     /*
     Manage the order of the views
@@ -123,9 +124,6 @@ public class MainActivity extends AppCompatActivity {
         sharedPreference
          */
         sharedPreferences=getSharedPreferences(MainActivity.NAME_SHARED_PREFERENCE, Context.MODE_PRIVATE);
-
-
-
 
         /*
         intiate Firestore
@@ -182,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
         textViewLevel=findViewById(R.id.textViewLevel);
         expProgressBar=findViewById(R.id.expProgressbar);
         editTextNametest=findViewById(R.id.editTextNameTest);
+        textviewTestName=findViewById(R.id.textViewTestName);
 
         //we add the view to the ContainerView in the order to organize the aparition of the different windows
         idHomePage=R.id.homePage;
@@ -217,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
             sequenceCompleted();
         }else
         {
-            Snackbar.make(snackBar,"Please choose a correct test name",Snackbar.LENGTH_SHORT);
+            Snackbar.make(snackBar,"Please choose a correct test name",Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -227,6 +226,9 @@ public class MainActivity extends AppCompatActivity {
         {
             printPageImage();
             user.register();
+        }else
+        {
+            Snackbar.make(snackBar,"Please choose a correct test name",Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -277,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
             if(user.addNewTest(editTextNametest.getText().toString()))
             {
                 toPrint="New Test Registered";
-                NotificationAlarm.createAlarm(this,user.getDocumentName(),user.getCurrentTestName());
+                NotificationAlarm.createAlarm(this,user.getDocumentName(),user.getCurrentTestName(),user.getNumOfTest());
             }
             else
             {
@@ -380,6 +382,7 @@ public class MainActivity extends AppCompatActivity {
                 //we set the number of sentence with the number of sentences for this test
                 NumberSentencesDialog.NBR_SENTENCES=user.getCurrentTest().getNbrSentenceForSequence();
                 containerView.printView(idTestCharacterPage);
+                textviewTestName.setText(user.getCurrentTestName());
                 //the user is currently testing his memory
                 user.doTry();
 

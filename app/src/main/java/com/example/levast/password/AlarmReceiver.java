@@ -39,7 +39,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                         {
                             String nameTest=intent.getStringExtra(MainActivity.INTENT_LEVAST_PASSWORD_NAME_TEST);
                             //we send a notif
-                            sendNotification(context,nameTest);
+                            sendNotification(context,nameTest,intent.getIntExtra(NotificationAlarm.INTENT_LEVAST_PASSWORD_ID_TEST_PENDINGINTENT,1));
 
                             firestoreDb.collection(MainActivity.COLLECTION_USERS).document(userToNotify.getDocumentName())
                                     .update("listTest",userToNotify.getListTest());
@@ -51,7 +51,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         //intent.getIntExtra(NotificationAlarm.INTENT_LEVAST_PASSWORD_ID_USER,-1)
     }
 
-    private void sendNotification(Context context,String nameTest)
+    private void sendNotification(Context context,String nameTest,int idNotification)
     {
         // Create an Intent for the activity you want to start
         Intent resultIntent = new Intent(context, MainActivity.class);
@@ -77,7 +77,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setContentText("do you remember your password?\ntest it now!");
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(1, mBuilder.build());
+        notificationManager.notify(idNotification, mBuilder.build());
     }
 
 

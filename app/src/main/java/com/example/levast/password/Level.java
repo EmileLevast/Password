@@ -9,6 +9,7 @@ public class Level {
     public static final int XP_BY_LEVEL=100;
     private final int BONUS_XP_SUITE =7;
     private final int BONUS_XP_NUM_OF_TRY=5;
+    private final int BONUS_XP_NUMBER_OF_TESTS=2;
     private final int XP_WIN_FOR_SUCCESS=15;
 
     private int currentLevel;
@@ -70,12 +71,13 @@ public class Level {
 
     /**
      * We calculate and add the xp
-     * @param test
+     * @param user
      * @param statsTest
      * @param success
      */
-    public int calculateXp(Test test,StatsTest statsTest,boolean success)
+    public int calculateXp(User user, StatsTest statsTest, boolean success)
     {
+        Test test=user.getCurrentTest();
 
         //Xp will be multiplicated By 2
         float factorXp=((float)(test.getPolicy().size()))/4f;
@@ -87,6 +89,7 @@ public class Level {
 
         int bonusXp= BONUS_XP_SUITE *statsTest.getCurrentSuite();
         bonusXp+=BONUS_XP_NUM_OF_TRY*test.getNumOfTry();
+        bonusXp+=BONUS_XP_NUMBER_OF_TESTS*user.getListTest().size();
 
         int xpTotal= (int) ((XP_WIN_FOR_SUCCESS+bonusXp)*factorXp);
 

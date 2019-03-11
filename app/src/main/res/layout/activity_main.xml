@@ -34,23 +34,27 @@
                 android:text="Your Password:"
                 android:layout_alignParentTop="true"/>
 
-            <TextView
-                style="@style/boutonHomePage"
-                android:id="@+id/passwordResult"
-                android:layout_centerInParent="true"
-                android:layout_below="@id/textResultTitle"
-                android:textColor="@color/strokeButton"
-                android:text="No Password"/>
 
             <GridView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_below="@id/passwordResult"
+                android:layout_below="@+id/textResultTitle"
                 android:numColumns="4"
                 android:scrollbars="vertical"
                 android:id="@+id/gridViewResult">
             </GridView>
+
+            <TextView
+                style="@style/boutonHomePage"
+                android:padding="10dp"
+                android:id="@+id/passwordResult"
+                android:layout_centerInParent="true"
+                android:layout_below="@id/gridViewResult"
+                android:background="@drawable/backgroundbutton"
+                android:textColor="@color/strokeButton"
+                android:textSize="30dp"
+                android:text="No Password"/>
 
 
             <Button
@@ -186,6 +190,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone">
+
+            <TextView
+                style="@style/boutonHomePage"
+                android:id="@+id/textViewTestName"
+                android:layout_centerInParent="true"
+                android:layout_above="@+id/rememberPassword"
+                android:background="@drawable/backgroundbutton"
+                android:textColor="@color/strokeButton"
+                android:textSize="30dp"
+                android:text="No Name"/>
 
             <EditText
                 android:id="@+id/rememberPassword"

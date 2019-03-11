@@ -32,6 +32,7 @@ public class User {
 
     //contain the name of the document that refer to the user in Firestore
     private String documentName;
+    private int numOfTest;//used to identify each test when schedule the alarm for the first time
 
     private Level level;
 
@@ -84,7 +85,7 @@ public class User {
                 getCurrentTest().nextTry();
         }
 
-        return level.calculateXp(getCurrentTest(),getCurrentTest().getStatsImagePassword(),check);
+        return level.calculateXp(this,getCurrentTest().getStatsImagePassword(),check);
     }
 
 
@@ -108,7 +109,7 @@ public class User {
             rescheduleAlarm(context);
         }
 
-        return level.calculateXp(getCurrentTest(),getCurrentTest().getStatCharacterPassword(),check);
+        return level.calculateXp(this,getCurrentTest().getStatCharacterPassword(),check);
     }
 
     public void addSymbolToPassword(Integer symbol)
@@ -129,6 +130,8 @@ public class User {
             testAdded.nextTry();
             listTest.put(nameTest,testAdded);
             currentTestName=nameTest;
+
+            numOfTest++;//just after this method we schedule the alarm for this test so be sure we have a new id
         }
 
         return insertSucceed;
@@ -233,6 +236,10 @@ public class User {
         return listTest;
     }
 
+    public int getNumOfTest() {
+        return numOfTest;
+    }
+
     private void rescheduleAlarm(Context context)
     {
         //if failure we have to reschedule the alarms from the last one
@@ -240,7 +247,7 @@ public class User {
         if(newNumOfTry>=0)
         {
             getCurrentTest().setNumOfTry(newNumOfTry);
-            NotificationAlarm.scheduleAlarmFrom(context,documentName,newNumOfTry,currentTestName);
+            NotificationAlarm.scheduleAlarmFrom(context,documentName,newNumOfTry,currentTestName,numOfTest);
         }
     }
 }
