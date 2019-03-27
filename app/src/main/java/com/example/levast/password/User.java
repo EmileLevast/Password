@@ -35,6 +35,7 @@ public class User {
     private int numOfTest;//used to identify each test when schedule the alarm for the first time
 
     private Level level;
+    private int rank;
 
     //each we do a try we get the name of the test we want via the intent in the notification and we save this test
     private String currentTestName;
@@ -69,20 +70,18 @@ public class User {
         {
             check=true;
             getCurrentTest().getStatsImagePassword().addSuccess();
-
+            getCurrentTest().nextTry();
         }
         else
         {
             getCurrentTest().getStatsImagePassword().addFailure();
 
             //if we didn't fail the test for character (this mean alarm have not already been rescheduled) we reschedule alarm because we do an error here
-            if(getCurrentTest().getStatCharacterPassword().getCurrentSuite()!=0)
-            {
+            if(getCurrentTest().getStatCharacterPassword().getCurrentSuite()!=0) {
                 getCurrentTest().previousTry();
                 rescheduleAlarm(context);
-            }else
-                //user go to nextTry if he succeed the two tests
-                getCurrentTest().nextTry();
+            }
+
         }
 
         return level.calculateXp(this,getCurrentTest().getStatsImagePassword(),check);
@@ -125,13 +124,14 @@ public class User {
 
         if(isValidNameForNewTest(nameTest))
         {
+            numOfTest++;//just after this method we schedule the alarm for this test so be sure we have a new id
             insertSucceed=true;
-            Test testAdded=new Test(PasswordPolicyDialog.getChosenPolicy(),currentInput,currentPasswordGenerated);
+            Test testAdded=new Test(PasswordPolicyDialog.getChosenPolicy(),currentInput,currentPasswordGenerated,numOfTest);
             testAdded.nextTry();
             listTest.put(nameTest,testAdded);
             currentTestName=nameTest;
 
-            numOfTest++;//just after this method we schedule the alarm for this test so be sure we have a new id
+
         }
 
         return insertSucceed;
@@ -227,6 +227,7 @@ public class User {
         {
             testFound=true;
             currentTestName=name;
+            currentPasswordGenerated=getCurrentTest().getPasswordGenerated();
         }
         return testFound;
     }
@@ -247,8 +248,16 @@ public class User {
         if(newNumOfTry>=0)
         {
             getCurrentTest().setNumOfTry(newNumOfTry);
-            NotificationAlarm.scheduleAlarmFrom(context,documentName,newNumOfTry,currentTestName,numOfTest);
+            NotificationAlarm.scheduleAlarmFrom(context,documentName,newNumOfTry,currentTestName,getCurrentTest().getId());
         }
+    }
+
+    public void setCurrentInput(ArrayList<Integer> currentInput) {
+        this.currentInput = new ArrayList<>(currentInput);
+    }
+
+    public int getRank() {
+        return rank;
     }
 }
 

@@ -7,8 +7,8 @@ package com.example.levast.password;
 public class Level {
 
     public static final int XP_BY_LEVEL=100;
-    private final int BONUS_XP_SUITE =7;
-    private final int BONUS_XP_NUM_OF_TRY=5;
+    private final int BONUS_XP_SUITE =6;
+    private final int BONUS_XP_NUM_OF_TRY=4;
     private final int BONUS_XP_NUMBER_OF_TESTS=2;
     private final int XP_WIN_FOR_SUCCESS=15;
 

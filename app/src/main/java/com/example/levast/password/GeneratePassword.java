@@ -108,6 +108,7 @@ public final class GeneratePassword {
         List<Character> password= intToSqceSymbol(seqceInputToInt(sequence),context);
         for(Character elt: password)
         {
+            
             text+=elt;
         }
         return text;

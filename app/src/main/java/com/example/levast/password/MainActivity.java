@@ -11,6 +11,7 @@ import android.content.res.Resources;
 
 import android.os.Build;
 import android.os.Handler;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -66,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
      */
     FirebaseFirestore firestoreDB;
     public static final String COLLECTION_USERS="COLLECTION_USERS";
+    private final String COLLECTION_STATS="stats";
+    private final String DOCUMENT_STATS="all_users";
+    private final String KEY_FIRESTORE_NUMBER_USERS="nbrUsers";
 
     /*
     The views
@@ -92,6 +96,9 @@ public class MainActivity extends AppCompatActivity {
     private int idTestCharacterPage;
     private int idResultPage;
     private int idWaitPage;
+
+    //used one time at the beginning to load the number of user
+    private int numberOfUser;
 
     /*
     Intents
@@ -182,6 +189,13 @@ public class MainActivity extends AppCompatActivity {
         editTextNametest=findViewById(R.id.editTextNameTest);
         textviewTestName=findViewById(R.id.textViewTestName);
 
+        expProgressBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(snackBar,"Your rank :"+user.getRank()+" / "+numberOfUser, BaseTransientBottomBar.LENGTH_LONG).show();
+            }
+        });
+
         //we add the view to the ContainerView in the order to organize the aparition of the different windows
         idHomePage=R.id.homePage;
         idPageImage=R.id.gridView;
@@ -269,11 +283,11 @@ public class MainActivity extends AppCompatActivity {
     {
         String toPrint;
 
-        user.setCurrentPasswordGenerated(GeneratePassword.getPasswordAsText(this,user.getCurrentInput()));
+
         //the user clicked on Register
         if(user.isRegisteringTest())
         {
-
+            user.setCurrentPasswordGenerated(GeneratePassword.getPasswordAsText(this,user.getCurrentInput()));
 
             //if we achieve to add our new test then we schedule the alarm
             if(user.addNewTest(editTextNametest.getText().toString()))
@@ -292,13 +306,18 @@ public class MainActivity extends AppCompatActivity {
         //user clicked on the notification to test his memory
         else if(user.isTrying())
         {
+            user.setCurrentPasswordGenerated(user.getCurrentTest().getPasswordGenerated());
             toPrint=constructStringXpWin(user.checkPassword(this));
 
+            //we set the good sequence of images to print it in the page of results
+            user.setCurrentInput(user.getCurrentTest().getPasswordSaved());
             NumberSentencesDialog.NBR_SENTENCES=sharedPreferences.getInt(NumberSentencesDialog.KEY_NUMBER_SENTENCES,NumberSentencesDialog.DEFAULT_NUMBER_SENTENCES);
         }
         //user clicked on LogIn to get a password in Clipboard
         else
         {
+
+            user.setCurrentPasswordGenerated(GeneratePassword.getPasswordAsText(this,user.getCurrentInput()));
             toPrint="Password Saved in the ClipBoard";
 
             ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
@@ -417,6 +436,29 @@ public class MainActivity extends AppCompatActivity {
         //we try to get the document corresponding to the user
         //I didn't understand why yet, but when there is no corresponding document sometimes it throw exception
         //sometimes user is null in OnSuccess Method
+
+        //we download the numberOfuser conained in the doc stat infirestore
+        firestoreDB.collection(COLLECTION_STATS).document(DOCUMENT_STATS)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                        if(documentSnapshot.exists())
+                        {
+                            try
+                            {
+                                numberOfUser=((Long)documentSnapshot.getData().get(KEY_FIRESTORE_NUMBER_USERS)).intValue();
+                            }catch (NullPointerException e)
+                            {
+                                //can't find the field
+                                numberOfUser=-1;
+                            }
+                        }
+
+                    }
+                });
+
         try
         {
             firestoreDB.collection(COLLECTION_USERS).document(sharedPreferences.getString(KEY_USER_DOCUMENT_NAME,""))

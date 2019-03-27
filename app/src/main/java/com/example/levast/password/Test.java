@@ -27,6 +27,9 @@ public class Test {
     //indicates How many time did the user test his memory for this registered test
     private int numOfTry;
 
+    //to schedule alarm without removing alarm for other tests
+    private int id;
+
     //indicates the number of sentences contained in the sequence for this test
     private int nbrSentenceForSequence;
 
@@ -40,11 +43,12 @@ public class Test {
     public Test() {
     }
 
-    public Test(ArrayList<String> policy, ArrayList<Integer> passwordSaved,String passwordGenerated) {
+    public Test(ArrayList<String> policy, ArrayList<Integer> passwordSaved,String passwordGenerated,int id) {
         this.nbrSentenceForSequence = passwordSaved.size()/ImageLegend.allPagesImages.size();
         this.passwordSaved = new ArrayList<>(passwordSaved);
         this.policy = policy;
         this.passwordGenerated=passwordGenerated;
+        this.id=id;
 
 
         listStat=new HashMap<>(0);
@@ -111,4 +115,7 @@ public class Test {
         return listStat;
     }
 
+    public int getId() {
+        return id;
+    }
 }
