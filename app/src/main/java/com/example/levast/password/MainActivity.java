@@ -205,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
         containerView=new ContainerView(this,idWaitPage,idHomePage,idPageImage,idResultPage,idTestCharacterPage);
 
         containerView.printView(idWaitPage);
+        Log.w("msg","OnCreate");
 
     }
 
@@ -370,9 +371,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
 
+        Log.w("msg","newIntentReceived");
         super.onNewIntent(intent);
-        updateWithIntent(intent);
         setIntent(intent);
+        updateWithIntent(intent);
     }
 
     public void goToHomePage(View view) {
@@ -395,6 +397,8 @@ public class MainActivity extends AppCompatActivity {
     private void updateWithIntent(Intent intent)
     {
         int pageToLaunch=intent.getIntExtra(INTENT_LEVAST_PASSWORD_ID_PAGE,-1);
+
+        Log.w("msg","updateScreen with:"+intent.getStringExtra(INTENT_LEVAST_PASSWORD_NAME_TEST));
         if(pageToLaunch==SHOW_LOGIN &&
                 //we found the corresponding test and we add the test in currenttest
                 user.initCurrentTest(intent.getStringExtra(INTENT_LEVAST_PASSWORD_NAME_TEST)))
@@ -533,5 +537,11 @@ public class MainActivity extends AppCompatActivity {
         expProgressBar.setProgress(user.getLevel().getXp());
         String str="Level "+user.getLevel().getCurrentLevel();
         textViewLevel.setText(str);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.w("msg","onDestroy");
     }
 }

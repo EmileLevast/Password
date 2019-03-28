@@ -64,7 +64,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         stackBuilder.addNextIntentWithParentStack(resultIntent);
 // Get the PendingIntent containing the entire back stack
         PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                stackBuilder.getPendingIntent(userToNotify.getTestWithName(nameTest).getId(), PendingIntent.FLAG_UPDATE_CURRENT);
 
 
 
