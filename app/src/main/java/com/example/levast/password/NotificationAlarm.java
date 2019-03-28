@@ -18,11 +18,11 @@ public class NotificationAlarm {
     public static final long[] timeOfRetry=new long[]{
 
             //values for test only
-            /*1000*30,
+            1000*30,
             1000*120,
             1000*300,
             1000*600,
-            1000*1000,*/
+            1000*1000,
 
 
 

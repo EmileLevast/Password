@@ -247,7 +247,6 @@ public class User {
         int newNumOfTry=getCurrentTest().getNumOfTry()-1;
         if(newNumOfTry>=0)
         {
-            getCurrentTest().setNumOfTry(newNumOfTry);
             NotificationAlarm.scheduleAlarmFrom(context,documentName,newNumOfTry,currentTestName,getCurrentTest().getId());
         }
     }

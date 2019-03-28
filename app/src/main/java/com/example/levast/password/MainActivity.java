@@ -370,8 +370,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
 
-        updateWithIntent(intent);
         super.onNewIntent(intent);
+        updateWithIntent(intent);
+        setIntent(intent);
     }
 
     public void goToHomePage(View view) {
