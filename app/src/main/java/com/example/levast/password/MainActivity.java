@@ -11,6 +11,7 @@ import android.content.res.Resources;
 
 import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -30,8 +31,11 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.core.RelationFilter;
+import com.google.firebase.firestore.core.UserData;
 
 import org.w3c.dom.Text;
 
@@ -205,7 +209,6 @@ public class MainActivity extends AppCompatActivity {
         containerView=new ContainerView(this,idWaitPage,idHomePage,idPageImage,idResultPage,idTestCharacterPage);
 
         containerView.printView(idWaitPage);
-        Log.w("msg","OnCreate");
 
     }
 
@@ -371,7 +374,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
 
-        Log.w("msg","newIntentReceived");
         super.onNewIntent(intent);
         setIntent(intent);
         updateWithIntent(intent);
@@ -398,7 +400,6 @@ public class MainActivity extends AppCompatActivity {
     {
         int pageToLaunch=intent.getIntExtra(INTENT_LEVAST_PASSWORD_ID_PAGE,-1);
 
-        Log.w("msg","updateScreen with:"+intent.getStringExtra(INTENT_LEVAST_PASSWORD_NAME_TEST));
         if(pageToLaunch==SHOW_LOGIN &&
                 //we found the corresponding test and we add the test in currenttest
                 user.initCurrentTest(intent.getStringExtra(INTENT_LEVAST_PASSWORD_NAME_TEST)))
@@ -466,8 +467,10 @@ public class MainActivity extends AppCompatActivity {
 
         try
         {
-            firestoreDB.collection(COLLECTION_USERS).document(sharedPreferences.getString(KEY_USER_DOCUMENT_NAME,""))
-                    .get()
+            DocumentReference docRef=firestoreDB.collection(COLLECTION_USERS).document(sharedPreferences.getString(KEY_USER_DOCUMENT_NAME,""));
+
+            //we retrieve the data about the document
+            docRef.get()
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -483,6 +486,26 @@ public class MainActivity extends AppCompatActivity {
                             updateWithIntent(getIntent());
                         }
                     });
+
+            docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                    @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.w("msg", "Listen failed.", e);
+                        return;
+                    }
+
+                    //we observe a change on the server
+                    if (snapshot != null && snapshot.exists() && !snapshot.getMetadata().hasPendingWrites()) {
+
+                        User userOnServer = snapshot.toObject(User.class);
+                        if (user!=null && userOnServer.getRank() != user.getRank()) {
+                            user.setRank(userOnServer.getRank());
+                        }
+                    }
+                }
+            });
 
         }catch (IllegalArgumentException exception)
         {
@@ -542,6 +565,5 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.w("msg","onDestroy");
     }
 }

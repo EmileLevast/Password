@@ -18,11 +18,11 @@ public class NotificationAlarm {
     public static final long[] timeOfRetry=new long[]{
 
             //values for test only
-            1000*30,
+            /*1000*30,
             1000*120,
             1000*300,
             1000*600,
-            1000*1000,
+            1000*1000,*/
 
 
 
@@ -57,7 +57,7 @@ public class NotificationAlarm {
         for(int i=begin;i<timeOfRetry.length;i++)
         {
             //add the value of the test to make a difference between alarm and avoid updating previous one
-            PendingIntent pendingIntent=PendingIntent.getBroadcast(context,timeOfRetry.length+i+idTest,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent=PendingIntent.getBroadcast(context,i+idTest*timeOfRetry.length,intent,PendingIntent.FLAG_UPDATE_CURRENT);
             alarmManager.set(AlarmManager.RTC,System.currentTimeMillis()+timeOfRetry[i],pendingIntent);
 
         }
