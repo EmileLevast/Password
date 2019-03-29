@@ -30,6 +30,8 @@ public class Test {
     //to schedule alarm without removing alarm for other tests
     private int id;
 
+    private String name;
+
     //indicates the number of sentences contained in the sequence for this test
     private int nbrSentenceForSequence;
 
@@ -43,12 +45,13 @@ public class Test {
     public Test() {
     }
 
-    public Test(ArrayList<String> policy, ArrayList<Integer> passwordSaved,String passwordGenerated,int id) {
+    public Test(ArrayList<String> policy, ArrayList<Integer> passwordSaved,String passwordGenerated,int id,String name) {
         this.nbrSentenceForSequence = passwordSaved.size()/ImageLegend.allPagesImages.size();
         this.passwordSaved = new ArrayList<>(passwordSaved);
         this.policy = policy;
         this.passwordGenerated=passwordGenerated;
         this.id=id;
+        this.name=name;
 
 
         listStat=new HashMap<>(0);
@@ -117,5 +120,14 @@ public class Test {
 
     public int getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

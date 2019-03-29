@@ -34,10 +34,13 @@ public class ContainerView {
 
     public void printView(Integer viewId)
     {
-        if(index!=0)
-            listView.get(index).setVisibility(View.GONE);
-        listView.get(viewId).setVisibility(View.VISIBLE);
-        index=viewId;
+        if(index!=viewId)
+        {
+            if(index!=0)
+                listView.get(index).setVisibility(View.GONE);
+            listView.get(viewId).setVisibility(View.VISIBLE);
+            index=viewId;
+        }
     }
 
     public View getViewWithId(int viewId)

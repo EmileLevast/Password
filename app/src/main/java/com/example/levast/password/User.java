@@ -8,6 +8,8 @@ import com.google.firebase.firestore.Exclude;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.example.levast.password.MainActivity.COLLECTION_USERS;
+
 /**
  * Created by Levast on 05.02.2019.
  */
@@ -70,19 +72,13 @@ public class User {
         {
             check=true;
             getCurrentTest().getStatsImagePassword().addSuccess();
-            getCurrentTest().nextTry();
         }
         else
         {
             getCurrentTest().getStatsImagePassword().addFailure();
-
-            //if we didn't fail the test for character (this mean alarm have not already been rescheduled) we reschedule alarm because we do an error here
-            if(getCurrentTest().getStatCharacterPassword().getCurrentSuite()!=0) {
-                getCurrentTest().previousTry();
-                rescheduleAlarm(context);
-            }
-
         }
+
+        checkBothTestSucceed(context);
 
         return level.calculateXp(this,getCurrentTest().getStatsImagePassword(),check);
     }
@@ -103,9 +99,6 @@ public class User {
         }else
         {
             getCurrentTest().getStatCharacterPassword().addFailure();
-            //we failed so we go back to the preivous try
-            getCurrentTest().previousTry();
-            rescheduleAlarm(context);
         }
 
         return level.calculateXp(this,getCurrentTest().getStatCharacterPassword(),check);
@@ -126,7 +119,7 @@ public class User {
         {
             numOfTest++;//just after this method we schedule the alarm for this test so be sure we have a new id
             insertSucceed=true;
-            Test testAdded=new Test(PasswordPolicyDialog.getChosenPolicy(),currentInput,currentPasswordGenerated,numOfTest);
+            Test testAdded=new Test(PasswordPolicyDialog.getChosenPolicy(),currentInput,currentPasswordGenerated,numOfTest,nameTest);
             testAdded.nextTry();
             listTest.put(nameTest,testAdded);
             currentTestName=nameTest;
@@ -235,6 +228,20 @@ public class User {
     //seem to be useless, but if yu want to save the listTest Field , firestore need to have an acess to it
     public HashMap<String,Test> getListTest() {
         return listTest;
+    }
+
+    private void checkBothTestSucceed(Context context)
+    {
+        //if one of the bost was failed
+        if(getCurrentTest().getStatCharacterPassword().getCurrentSuite()==0
+                || getCurrentTest().getStatsImagePassword().getCurrentSuite()==0) {
+            getCurrentTest().previousTry();
+            rescheduleAlarm(context);
+        }
+        else
+        {
+            getCurrentTest().nextTry();
+        }
     }
 
     public int getNumOfTest() {

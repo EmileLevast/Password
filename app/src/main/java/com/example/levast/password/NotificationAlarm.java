@@ -22,8 +22,8 @@ public class NotificationAlarm {
             1000*120,
             1000*300,
             1000*600,
-            1000*1000,*/
-
+            1000*1000,
+            */
 
 
             1000*60*10,//10 min first try
@@ -54,12 +54,20 @@ public class NotificationAlarm {
 
 
         //we create a different id for each pending intent in order to avoid update of the previous programmed intent
-        for(int i=begin;i<timeOfRetry.length;i++)
-        {
+        for(int i=begin;i<timeOfRetry.length;i++) {
             //add the value of the test to make a difference between alarm and avoid updating previous one
-            PendingIntent pendingIntent=PendingIntent.getBroadcast(context,i+idTest*timeOfRetry.length,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-            alarmManager.set(AlarmManager.RTC,System.currentTimeMillis()+timeOfRetry[i],pendingIntent);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, i + idTest * timeOfRetry.length, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + timeOfRetry[i], pendingIntent);
+        }
+    }
 
+    public static void cancelAlarmForTest(Context context,Test test)
+    {
+        AlarmManager alarmManager= (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        for(int i=0;i<timeOfRetry.length;i++) {
+            //add the value of the test to make a difference between alarm and avoid updating previous one
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, i + test.getId() * timeOfRetry.length, new Intent(context,AlarmReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
+            alarmManager.cancel(pendingIntent);
         }
     }
 }

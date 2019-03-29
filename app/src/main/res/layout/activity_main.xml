@@ -18,6 +18,37 @@
             android:visibility="gone"
             android:id="@+id/gridView">
         </GridView>
+        <RelativeLayout
+            android:id="@+id/listTestPage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/boutonHomePage"
+                android:id="@+id/textViewDeleteTest"
+                android:background="@color/transparent"
+                android:textColor="@color/strokeButton"
+                android:text="Choose a test to delete"
+                android:layout_alignParentTop="true"/>
+            
+            <ListView
+                android:id="@+id/listViewTests"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textViewDeleteTest"
+                android:layout_above="@+id/GotoHomePageButtonTestPage">
+            </ListView>
+
+
+            <Button
+                android:id="@+id/GotoHomePageButtonTestPage"
+                style="@style/boutonHomePage"
+                android:layout_alignParentBottom="true"
+                android:onClick="goToHomePage"
+                android:text="go to Home page"/>
+
+        </RelativeLayout>
 
 
         <RelativeLayout
@@ -111,8 +142,15 @@
             <Button
                 android:id="@+id/loginButton"
                 style="@style/boutonHomePage"
+                android:layout_above="@+id/goToListTestButton"
                 android:onClick="createPasswordClick"
                 android:text="Generate Password"/>
+
+            <Button
+                android:id="@+id/goToListTestButton"
+                style="@style/boutonHomePage"
+                android:onClick="goToListTestPage"
+                android:text="Cancel a Test"/>
 
 
             <Button
