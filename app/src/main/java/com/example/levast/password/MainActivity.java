@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -26,7 +27,6 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -36,12 +36,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.core.RelationFilter;
-import com.google.firebase.firestore.core.UserData;
 
-import org.w3c.dom.Text;
-
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -194,10 +189,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        //we create the font
+        Typeface font=Typeface.createFromAsset(getAssets(),"fonts/tahoma.ttf");
+
         //get the view with their id
         snackBar = findViewById(R.id.scnackBar);
         rememberPasswordView = findViewById(R.id.rememberPassword);
         textPasswordGenerated = findViewById(R.id.passwordResult);
+        textPasswordGenerated.setTypeface(font);
         textViewLevel = findViewById(R.id.textViewLevel);
         expProgressBar = findViewById(R.id.expProgressbar);
         editTextNametest = findViewById(R.id.editTextNameTest);
@@ -317,10 +317,10 @@ public class MainActivity extends AppCompatActivity {
 
             //if we achieve to add our new test then we schedule the alarm
             if (getUser().addNewTest(editTextNametest.getText().toString())) {
-                toPrint = "Learn this sequence and this password, first test in 10 min.";
+                toPrint = "Learn this, test n°1 in 10 min.";
                 NotificationAlarm.createAlarm(this, getUser().getDocumentName(), getUser().getCurrentTestName(), getUser().getNumOfTest());
             } else {
-                toPrint = "Error:Name for test is Not Valid";
+                toPrint = "Error: Same sequence as an other test.\nPlease change.";
             }
 
 
@@ -352,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
         printResultSequence();
 
         //we check or save the password and go to the home page
-        Snackbar.make(snackBar, toPrint, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(snackBar, toPrint, Snackbar.LENGTH_LONG).show();
         containerPagePictures.init();
     }
 
@@ -458,8 +458,8 @@ public class MainActivity extends AppCompatActivity {
         //sometimes user is null in OnSuccess Method
 
         //we download the numberOfuser conained in the doc stat infirestore
-        firestoreDB.collection(COLLECTION_STATS).document(DOCUMENT_STATS)
-                .get()
+        final DocumentReference docRefStats = firestoreDB.collection(COLLECTION_STATS).document(DOCUMENT_STATS);
+        docRefStats.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -467,59 +467,77 @@ public class MainActivity extends AppCompatActivity {
                         if (documentSnapshot.exists()) {
                             try {
                                 numberOfUser = ((Long) documentSnapshot.getData().get(KEY_FIRESTORE_NUMBER_USERS)).intValue();
+                                Log.w("msg","numberUsers:"+numberOfUser);
                             } catch (NullPointerException e) {
                                 //can't find the field
                                 numberOfUser = -1;
                             }
+
+                            getUserOrCreateFromFirestore();
                         }
 
                     }
                 });
 
-        try {
-            final DocumentReference docRef = firestoreDB.collection(COLLECTION_USERS).document(sharedPreferences.getString(KEY_USER_DOCUMENT_NAME, ""));
 
-            //we retrieve the data about the document
-            docRef.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+    }
 
-                            //we download the user
-                            user = documentSnapshot.toObject(User.class);
+    private void getUserOrCreateFromFirestore()
+    {
+        //try{
+        final DocumentReference docRef = firestoreDB.collection(COLLECTION_USERS).document(sharedPreferences.getString(KEY_USER_DOCUMENT_NAME, ""));
 
-                            if (getUser() == null) {
-                                CreateAndInsertUserInFirestore();
+        //we retrieve the data about the document
+        docRef.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                            }
-                            setRealtimeUpdateRank();
+                        //we download the user
+                        user = documentSnapshot.toObject(User.class);
 
-                            //if the activity is launched by an intent (thanks to our notification) we have to redirect the user on the right page
-                            updateWithIntent(getIntent());
+                        if (getUser() == null) {
+                            Log.w("msg","pas de users");
+                            CreateAndInsertUserInFirestore();
+
                         }
-                    });
+                        setRealtimeUpdateRank();
+
+                        //if the activity is launched by an intent (thanks to our notification) we have to redirect the user on the right page
+                        updateWithIntent(getIntent());
+                    }
+                });
 
 
-        } catch (IllegalArgumentException exception) {
+        /*} catch (IllegalArgumentException exception) {
+            Log.w("msg","error get user");
+
             CreateAndInsertUserInFirestore();
             setRealtimeUpdateRank();
 
             //if the activity is launched by an intent (thanks to our notification) we have to redirect the user on the right page
             updateWithIntent(getIntent());
-        }
+        }*/
     }
 
     private void CreateAndInsertUserInFirestore() {
-        //if there is no such document
-        //we upload his document
-        //we create it with an id auto-generated
+
+        Log.w("msg","create user in firestore :"+numberOfUser);
+        //we create a new user so the number of user increment and we update the value in the database
+        numberOfUser++;
+        final DocumentReference docRefStats = firestoreDB.collection(COLLECTION_STATS).document(DOCUMENT_STATS);
+        docRefStats.update("nbrUsers",numberOfUser);
+
+        //we create the new user with an id auto-generated
         DocumentReference documentReference = firestoreDB.collection(COLLECTION_USERS).document();
-        user = new User(documentReference.getId());
+        user = new User(documentReference.getId(),numberOfUser);
         documentReference.set(getUser());
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(KEY_USER_DOCUMENT_NAME, getUser().getDocumentName());
         editor.apply();
+
+
     }
 
     public void createNotificationChannel() {

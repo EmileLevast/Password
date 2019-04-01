@@ -128,7 +128,7 @@
                 android:layout_alignEnd="@+id/loginButton"
                 android:layout_alignStart="@+id/loginButton"
                 android:onClick="generateTestClick"
-                android:text="Generate a test"/>
+                android:text="AutoGenerate test"/>
 
             <Button
                 android:id="@+id/RegisterButton"
@@ -137,12 +137,13 @@
                 android:layout_alignEnd="@+id/loginButton"
                 android:layout_alignStart="@+id/loginButton"
                 android:onClick="RegisterClick"
-                android:text="Register a Test"/>
+                android:text="Generate Test"/>
 
             <Button
                 android:id="@+id/loginButton"
                 style="@style/boutonHomePage"
                 android:layout_above="@+id/goToListTestButton"
+
                 android:onClick="createPasswordClick"
                 android:text="Generate Password"/>
 

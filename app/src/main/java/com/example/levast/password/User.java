@@ -6,7 +6,11 @@ import android.content.Context;
 import com.google.firebase.firestore.Exclude;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 
 import static com.example.levast.password.MainActivity.COLLECTION_USERS;
 
@@ -46,10 +50,11 @@ public class User {
         init();
     }
 
-    public User(String documentName) {
+    public User(String documentName,int startRank) {
         this.documentName=documentName;
         listTest=new HashMap<>(0);
         level=new Level();
+        rank=startRank;
         init();
     }
 
@@ -115,7 +120,8 @@ public class User {
     {
         boolean insertSucceed=false;
 
-        if(isValidNameForNewTest(nameTest))
+        //if the user didn't previously save the same sequence
+        if(!sequenceAlreadyExists())
         {
             numOfTest++;//just after this method we schedule the alarm for this test so be sure we have a new id
             insertSucceed=true;
@@ -123,8 +129,6 @@ public class User {
             testAdded.nextTry();
             listTest.put(nameTest,testAdded);
             currentTestName=nameTest;
-
-
         }
 
         return insertSucceed;
@@ -150,6 +154,24 @@ public class User {
     public boolean isValidNameForNewTest(String nameNewTest)
     {
         return !nameNewTest.isEmpty()&&!listTest.containsKey(nameNewTest);
+    }
+
+    private boolean sequenceAlreadyExists()
+    {
+        boolean exists=false;
+
+        Iterator iteratorListTest=listTest.values().iterator();
+        while(iteratorListTest.hasNext())
+        {
+            //if we find a previous test with the same sequence we return true
+            if(((Test)iteratorListTest.next()).getPasswordSaved().equals(getCurrentInput()))
+            {
+                exists=true;
+                break;
+            }
+        }
+
+        return exists;
     }
 
     /**
