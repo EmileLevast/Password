@@ -46,6 +46,7 @@ public class User {
     //each we do a try we get the name of the test we want via the intent in the notification and we save this test
     private String currentTestName;
 
+    //used for Firestore
     public User() {
         init();
     }

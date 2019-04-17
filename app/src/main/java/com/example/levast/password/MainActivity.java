@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -91,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textViewLevel;
     private EditText editTextNametest;
     private TextView textviewTestName;
+    private TextView textViewPasswordSentenceResult;
 
     /*
     Manage the order of the views
@@ -98,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
     private Container<List<ImageLegend>> containerPagePictures;
     private int idHomePage;
     private int idPageImage;
+    private int idWebPage;
     private int idTestCharacterPage;
     private int idResultPage;
     private int idWaitPage;
@@ -203,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
         editTextNametest = findViewById(R.id.editTextNameTest);
         textviewTestName = findViewById(R.id.textViewTestName);
         listViewTestDelete = findViewById(R.id.listViewTests);
+        textViewPasswordSentenceResult=findViewById(R.id.passwordSentenceResult);
 
         listViewTestDelete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -218,6 +222,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        WebView webView=findViewById(R.id.webView);
+        webView.getSettings().setDomStorageEnabled(true);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setAllowContentAccess(true);
+
+        webView.loadUrl("https://hftlapp.wixsite.com/website/forum");
 
         expProgressBar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -231,9 +241,10 @@ public class MainActivity extends AppCompatActivity {
         idPageImage = R.id.gridView;
         idResultPage = R.id.resultPage;
         idWaitPage = R.id.waitPage;
+        idWebPage=R.id.pageWeb;
         idListTestPage = R.id.listTestPage;
         idTestCharacterPage = R.id.pageTestCharacter;
-        containerView = new ContainerView(this, idWaitPage, idHomePage, idPageImage, idResultPage, idTestCharacterPage, idListTestPage);
+        containerView = new ContainerView(this,idWebPage, idWaitPage, idHomePage, idPageImage, idResultPage, idTestCharacterPage, idListTestPage);
 
         containerView.printView(idWaitPage);
 
@@ -406,9 +417,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void printResultSequence() {
-        customViewResult = new CustomView(this, ImageLegend.getElementWithId(ImageLegend.allPagesImages, getUser().getCurrentInput()));
+        List<ImageLegend> listImageSelected=ImageLegend.getElementWithId(ImageLegend.allPagesImages, getUser().getCurrentInput());
+        customViewResult = new CustomView(this, listImageSelected);
         gridViewResult.setAdapter(customViewResult);
         textPasswordGenerated.setText(getUser().getCurrentPasswordGenerated());
+        textViewPasswordSentenceResult.setText(ImageLegend.getSequenceAsSentence(listImageSelected));
         containerView.printView(idResultPage);
     }
 
@@ -485,7 +498,7 @@ public class MainActivity extends AppCompatActivity {
     private void getUserOrCreateFromFirestore()
     {
         //try{
-        final DocumentReference docRef = firestoreDB.collection(COLLECTION_USERS).document(sharedPreferences.getString(KEY_USER_DOCUMENT_NAME, ""));
+        final DocumentReference docRef = firestoreDB.collection(COLLECTION_USERS).document(sharedPreferences.getString(KEY_USER_DOCUMENT_NAME, "NoDocument"));
 
         //we retrieve the data about the document
         docRef.get()
@@ -627,5 +640,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void goToListTestPage(View view) {
         printPageListTest();
+    }
+
+    public void goWebPageClick(View view) {
+        containerView.printView(idWebPage);
     }
 }

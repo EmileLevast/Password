@@ -4,11 +4,12 @@
     android:layout_height="match_parent"
     >
 
+
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary">
+        android:background="@color/secondHFTL">
 
         <GridView
             android:layout_width="match_parent"
@@ -57,35 +58,58 @@
             android:layout_height="match_parent"
             android:visibility="gone">
 
-            <TextView
-                style="@style/boutonHomePage"
-                android:id="@+id/textResultTitle"
-                android:background="@color/transparent"
-                android:textColor="@color/strokeButton"
-                android:text="Your Password:"
-                android:layout_alignParentTop="true"/>
 
 
-            <GridView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_below="@+id/textResultTitle"
-                android:numColumns="4"
-                android:scrollbars="vertical"
-                android:id="@+id/gridViewResult">
-            </GridView>
 
-            <TextView
-                style="@style/boutonHomePage"
-                android:padding="10dp"
-                android:id="@+id/passwordResult"
-                android:layout_centerInParent="true"
-                android:layout_below="@id/gridViewResult"
-                android:background="@drawable/backgroundbutton"
-                android:textColor="@color/strokeButton"
-                android:textSize="30dp"
-                android:text="No Password"/>
+
+
+                    <TextView
+                        style="@style/boutonHomePage"
+                        android:id="@+id/textResultTitle"
+                        android:background="@color/transparent"
+                        android:textColor="@color/primaryHFTL"
+                        android:text="Your Password:"
+                        android:layout_alignParentTop="true"/>
+
+
+                    <GridView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_below="@+id/textResultTitle"
+                        android:numColumns="4"
+                        android:scrollbars="vertical"
+                        android:id="@+id/gridViewResult"
+                        >
+                    </GridView>
+
+
+
+
+
+                    <TextView
+                        style="@style/boutonHomePage"
+                        android:padding="10dp"
+                        android:id="@+id/passwordResult"
+                        android:layout_centerInParent="true"
+                        android:layout_below="@id/gridViewResult"
+                        android:background="@drawable/backgroundbutton"
+                        android:textColor="@color/primaryHFTL"
+                        android:textSize="30dp"
+                        android:text="No Password"/>
+
+                    <TextView
+                        style="@style/boutonHomePage"
+                        android:padding="5dp"
+                        android:id="@+id/passwordSentenceResult"
+                        android:layout_centerInParent="true"
+                        android:layout_below="@id/passwordResult"
+
+                        android:textColor="@color/primaryHFTL"
+                        android:textSize="15dp"
+                        android:text="No Password"/>
+
+
 
 
             <Button
@@ -106,95 +130,107 @@
             android:visibility="gone"
            >
 
-            <View
-                android:id="@+id/scnackBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
-
-            <EditText
-                style="@style/boutonHomePage"
-                android:id="@+id/editTextNameTest"
-                android:layout_above="@+id/GenerateTest"
-                android:layout_alignEnd="@+id/loginButton"
-                android:layout_alignStart="@+id/loginButton"
-                android:hint="Name your test"
-                />
-
-            <Button
-                android:id="@+id/GenerateTest"
-                style="@style/boutonHomePage"
-                android:layout_above="@+id/RegisterButton"
-                android:layout_alignEnd="@+id/loginButton"
-                android:layout_alignStart="@+id/loginButton"
-                android:onClick="generateTestClick"
-                android:text="AutoGenerate test"/>
-
-            <Button
-                android:id="@+id/RegisterButton"
-                style="@style/boutonHomePage"
-                android:layout_above="@+id/loginButton"
-                android:layout_alignEnd="@+id/loginButton"
-                android:layout_alignStart="@+id/loginButton"
-                android:onClick="RegisterClick"
-                android:text="Generate Test"/>
-
-            <Button
-                android:id="@+id/loginButton"
-                style="@style/boutonHomePage"
-                android:layout_above="@+id/goToListTestButton"
-
-                android:onClick="createPasswordClick"
-                android:text="Generate Password"/>
-
-            <Button
-                android:id="@+id/goToListTestButton"
-                style="@style/boutonHomePage"
-                android:onClick="goToListTestPage"
-                android:text="Cancel a Test"/>
 
 
-            <Button
-                android:id="@+id/PolicyButton"
-                style="@style/buttonSettings"
-                android:onClick="showPolicyDialog"
-                android:text="Choose Policy"/>
+                <View
+                    android:id="@+id/scnackBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
 
-            <Button
-                android:id="@+id/SentencesButton"
-                style="@style/buttonSettings"
-                android:layout_toEndOf="@id/PolicyButton"
-                android:onClick="showNumberSentencesDialog"
-                android:text="Number of Sentences"/>
+                <EditText
+                    style="@style/boutonHomePage"
+                    android:id="@+id/editTextNameTest"
+                    android:layout_above="@+id/GenerateTest"
+                    android:layout_alignEnd="@+id/loginButton"
+                    android:layout_alignStart="@+id/loginButton"
+                    android:hint="Name your test"
+                    />
 
-            <ProgressBar
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:id="@+id/expProgressbar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                <Button
+                    android:id="@+id/GenerateTest"
+                    style="@style/boutonHomePage"
+                    android:layout_above="@+id/RegisterButton"
+                    android:layout_alignEnd="@+id/loginButton"
+                    android:layout_alignStart="@+id/loginButton"
+                    android:onClick="generateTestClick"
+                    android:text="AutoGenerate test"/>
 
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_toEndOf="@+id/SentencesButton"
-                android:layout_alignTop="@id/SentencesButton"
-                android:indeterminate="false"
-                android:progress="50"
-                android:max="100"
-                android:progressDrawable="@drawable/progressexpbar"
-                android:padding="2dp"
-                android:layout_marginBottom="15dp"
-                android:layout_marginTop="15dp"/>
+                <Button
+                    android:id="@+id/RegisterButton"
+                    style="@style/boutonHomePage"
+                    android:layout_above="@+id/loginButton"
+                    android:layout_alignEnd="@+id/loginButton"
+                    android:layout_alignStart="@+id/loginButton"
+                    android:onClick="RegisterClick"
+                    android:text="Generate Test"/>
 
-               <TextView
-                  style="@style/textLevel"
-                   android:id="@+id/textViewLevel"
-                   android:text="0"
-                   android:layout_toEndOf="@id/SentencesButton"
-                   android:layout_alignTop="@id/SentencesButton"
-                   android:layout_alignParentBottom="true"
-                   android:layout_alignParentEnd="true"
-                   android:gravity="center"
-                   />
+                <Button
+                    android:id="@+id/loginButton"
+                    style="@style/boutonHomePage"
+                    android:layout_above="@+id/goToListTestButton"
+
+                    android:onClick="createPasswordClick"
+                    android:text="Generate Password"/>
+
+                <Button
+                    android:id="@+id/goToListTestButton"
+                    style="@style/boutonHomePage"
+                    android:layout_above="@+id/goWebPage"
+                    android:onClick="goToListTestPage"
+                    android:text="Cancel a Test"/>
+
+                <Button
+                    style="@style/boutonHomePage"
+                    android:id="@+id/goWebPage"
+                    android:onClick="goWebPageClick"
+                    android:layout_alignEnd="@+id/goToListTestButton"
+                    android:layout_alignStart="@+id/goToListTestButton"
+                    android:text="Contact us"/>
+
+
+                <Button
+                    android:id="@+id/PolicyButton"
+                    style="@style/buttonSettings"
+                    android:onClick="showPolicyDialog"
+                    android:text="Choose Policy"/>
+
+                <Button
+                    android:id="@+id/SentencesButton"
+                    style="@style/buttonSettings"
+                    android:layout_toEndOf="@id/PolicyButton"
+                    android:onClick="showNumberSentencesDialog"
+                    android:text="Number of Sentences"/>
+
+                <ProgressBar
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:id="@+id/expProgressbar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toEndOf="@+id/SentencesButton"
+                    android:layout_alignTop="@id/SentencesButton"
+                    android:indeterminate="false"
+                    android:progress="50"
+                    android:max="100"
+                    android:progressDrawable="@drawable/progressexpbar"
+                    android:padding="2dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginTop="15dp"/>
+
+                   <TextView
+                      style="@style/textLevel"
+                       android:id="@+id/textViewLevel"
+                       android:text="0"
+                       android:layout_toEndOf="@id/SentencesButton"
+                       android:layout_alignTop="@id/SentencesButton"
+                       android:layout_alignParentBottom="true"
+                       android:layout_alignParentEnd="true"
+                       android:gravity="center"
+                       />
+
 
 
         </RelativeLayout>
@@ -204,12 +240,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
-            android:background="@color/black">
+            android:background="@color/secondHFTL">
 
             <TextView
                 style="@style/boutonHomePage"
                 android:text="Please Wait"
-                android:textColor="@color/strokeButton"
+                android:textColor="@color/primaryHFTL"
                 android:id="@+id/waitText"/>
 
             <ProgressBar
@@ -236,7 +272,7 @@
                 android:layout_centerInParent="true"
                 android:layout_above="@+id/rememberPassword"
                 android:background="@drawable/backgroundbutton"
-                android:textColor="@color/strokeButton"
+                android:textColor="@color/primaryHFTL"
                 android:textSize="30dp"
                 android:text="No Name"/>
 
@@ -254,6 +290,31 @@
                 android:layout_alignStart="@id/rememberPassword"
                 android:onClick="checkPasswordCharOnClick"
                 android:text="Verify"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/pageWeb"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <WebView
+                android:id="@+id/webView"
+                android:padding="0dp"
+                android:layout_margin="0dp"
+                android:layout_width="match_parent"
+                android:layout_above="@+id/GotoHomepageButton"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                />
+
+            <Button
+                style="@style/boutonHomePage"
+                android:id="@+id/GotoHomepageButton"
+                android:layout_alignParentBottom="true"
+                android:onClick="goToHomePage"
+                android:text="go to Home Page"/>
 
         </RelativeLayout>
 
