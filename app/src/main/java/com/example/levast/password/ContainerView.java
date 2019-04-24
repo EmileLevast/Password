@@ -1,7 +1,6 @@
 package com.example.levast.password;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 
 import java.util.HashMap;
@@ -14,6 +13,8 @@ public class ContainerView {
 
     private HashMap<Integer,View> listView;// key correspond to the id of the view
     private int index;
+
+
 
     public ContainerView(MainActivity activity, Integer... item) {
 

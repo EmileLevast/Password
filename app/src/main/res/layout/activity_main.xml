@@ -59,9 +59,14 @@
             android:visibility="gone">
 
 
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/GotoHomePageButton">
 
-
-
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                     <TextView
                         style="@style/boutonHomePage"
@@ -72,7 +77,7 @@
                         android:layout_alignParentTop="true"/>
 
 
-                    <GridView
+                    <com.example.levast.password.ExpandableHeightGridView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -81,7 +86,7 @@
                         android:scrollbars="vertical"
                         android:id="@+id/gridViewResult"
                         >
-                    </GridView>
+                    </com.example.levast.password.ExpandableHeightGridView>
 
 
 
@@ -109,8 +114,8 @@
                         android:textSize="15dp"
                         android:text="No Password"/>
 
-
-
+            </RelativeLayout>
+            </ScrollView>
 
             <Button
                 android:id="@+id/GotoHomePageButton"

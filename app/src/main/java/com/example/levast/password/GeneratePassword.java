@@ -45,17 +45,17 @@ public final class GeneratePassword {
 
         //we  use a big integer because if the user choose
         BigInteger res=BigInteger.valueOf(0L);
-        Log.w("msg","=======================");
+        //Log.w("msg","=======================");
         //NBR_PAGES== S
         for(int i=0;i<sequence.size();i++)
         {
-            Log.w("msg","e["+i+"]="+(sequence.get(i)+1));
+          //  Log.w("msg","e["+i+"]="+(sequence.get(i)+1));
             //we add 1 else the first img (==0) has no impact on the password
             //res+=((double)(sequence.get(i)+1))*Math.pow(MainActivity.NBR_COLUMN*MainActivity.NBR_LINE,i);
             res=res.add(BigInteger.valueOf((long) ((sequence.get(i)+1)*Math.pow(MainActivity.NBR_COLUMN*MainActivity.NBR_LINE,i))));
-            Log.w("msg","\tPN:"+res);
+            //Log.w("msg","\tPN:"+res);
         }
-        Log.w("msg","PN:"+res);
+        //Log.w("msg","PN:"+res);
         return res;
     }
 

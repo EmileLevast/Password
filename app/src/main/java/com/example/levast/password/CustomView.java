@@ -51,7 +51,7 @@ public class CustomView extends ArrayAdapter<Integer> {
 
         //we create our viewHolder to save our view
         ViewHolder viewHolder=new ViewHolder();
-        Log.d(TAG,"Image counter: " + position + " ConvertView: " + convertView);
+        //Log.d(TAG,"Image counter: " + position + " ConvertView: " + convertView);
         //if we are at the beginning convertView is null , we have to inflate it
         if(listItem == null)
         {

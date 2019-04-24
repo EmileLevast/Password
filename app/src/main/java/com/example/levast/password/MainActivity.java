@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
     private CustomView customView;
     private CustomView customViewResult;
     private GridView gridView;
-    private GridView gridViewResult;
+    private ExpandableHeightGridView gridViewResult;
     private ListView listViewTestDelete;
     public static View snackBar;
     private EditText rememberPasswordView;
@@ -93,6 +93,9 @@ public class MainActivity extends AppCompatActivity {
     private EditText editTextNametest;
     private TextView textviewTestName;
     private TextView textViewPasswordSentenceResult;
+
+    //to determine in the home page which views the user can see
+    private UnlockViewByLevel unlockViewByLevel;
 
     /*
     Manage the order of the views
@@ -155,6 +158,8 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(NAME_SHARED_PREFERENCE, Context.MODE_PRIVATE);
         NumberSentencesDialog.NBR_SENTENCES = sharedPreferences.getInt(NumberSentencesDialog.KEY_NUMBER_SENTENCES, NumberSentencesDialog.DEFAULT_NUMBER_SENTENCES);
 
+        unlockViewByLevel=new UnlockViewByLevel(this);
+
 
         /*
         Prepare All the graphics components
@@ -171,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
 
         //gridView to print the results
         gridViewResult = findViewById(R.id.gridViewResult);
+        gridViewResult.setExpanded(true);
 
         //what to do on click
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -412,6 +418,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goToHomePage(View view) {
+        unlockViewByLevel.checkIfViewToUnlock(user.getLevel().getCurrentLevel());
         containerView.printView(idHomePage);
         updateExpBarUser();
     }
