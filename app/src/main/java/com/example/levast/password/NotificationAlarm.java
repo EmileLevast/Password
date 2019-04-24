@@ -26,7 +26,7 @@ public class NotificationAlarm {
             */
 
 
-            1000*10,
+
             1000*60*10,//10 min first try
             1000*60*60*24,//24 h
             1000*60*60*24*4,//4 days
