@@ -77,7 +77,7 @@
                         android:layout_alignParentTop="true"/>
 
 
-                    <com.example.levast.password.ExpandableHeightGridView
+                    <de.hftl.levast.password.ExpandableHeightGridView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -86,7 +86,7 @@
                         android:scrollbars="vertical"
                         android:id="@+id/gridViewResult"
                         >
-                    </com.example.levast.password.ExpandableHeightGridView>
+                    </de.hftl.levast.password.ExpandableHeightGridView>
 
 
 
@@ -318,12 +318,40 @@
                 style="@style/boutonHomePage"
                 android:id="@+id/GotoHomepageButton"
                 android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
                 android:onClick="goToHomePage"
                 android:text="go to Home Page"/>
+
+            <Button
+                style="@style/boutonHomePage"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/buttonPrivacyPolicy"
+                android:layout_alignParentStart="true"
+                android:onClick="goToPrivacyPolicy"
+                android:text="Privacy policy"
+                />
 
         </RelativeLayout>
 
     </FrameLayout>
+
+    <TextView
+        android:id="@+id/infoTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+
+        android:background="@drawable/backgroundinfoview"
+        android:textSize="25sp"
+        android:textAlignment="center"
+        android:textColor="@color/infoTextView"
+
+        android:text="No News"
+
+        android:onClick="dismissClick"
+
+
+        />
 
 
 </RelativeLayout>

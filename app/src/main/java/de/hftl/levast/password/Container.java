@@ -1,4 +1,4 @@
-package com.example.levast.password;
+package de.hftl.levast.password;
 
 import java.util.ArrayList;
 import java.util.List;

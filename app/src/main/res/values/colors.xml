@@ -14,4 +14,7 @@
     <color name="expColorEndBackground">#ff3300</color>
     <color name="primaryHFTL">#E6007E</color>
     <color name="secondHFTL">#BBBBBB</color>
+
+    <color name="infoTextView">#33DDEE</color>
+    <color name="backgroundinfoTextView">#4F4F5F</color>
 </resources>

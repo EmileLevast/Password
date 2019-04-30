@@ -1,4 +1,4 @@
-package com.example.levast.password;
+package de.hftl.levast.password;
 
 
 import android.content.Context;
@@ -6,13 +6,8 @@ import android.content.Context;
 import com.google.firebase.firestore.Exclude;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-
-
-import static com.example.levast.password.MainActivity.COLLECTION_USERS;
 
 /**
  * Created by Levast on 05.02.2019.

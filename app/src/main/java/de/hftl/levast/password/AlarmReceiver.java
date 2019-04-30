@@ -1,4 +1,4 @@
-package com.example.levast.password;
+package de.hftl.levast.password;
 
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;

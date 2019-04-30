@@ -1,4 +1,4 @@
-package com.example.levast.password;
+package de.hftl.levast.password;
 
 /**
  * Created by Levast on 07.03.2019.

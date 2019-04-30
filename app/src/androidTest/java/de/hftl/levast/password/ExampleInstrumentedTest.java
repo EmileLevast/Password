@@ -1,4 +1,4 @@
-package com.example.levast.password;
+package de.hftl.levast.password;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

@@ -1,5 +1,6 @@
-package com.example.levast.password;
+package de.hftl.levast.password;
 
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ClipData;
@@ -13,14 +14,17 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BaseTransientBottomBar;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -92,7 +96,13 @@ public class MainActivity extends AppCompatActivity {
     private TextView textViewLevel;
     private EditText editTextNametest;
     private TextView textviewTestName;
+    private TextView infoTextView;
     private TextView textViewPasswordSentenceResult;
+    private TextView textResultTitle;
+
+    private WebView webView;
+
+    private Animation animation;
 
     //to determine in the home page which views the user can see
     private UnlockViewByLevel unlockViewByLevel;
@@ -136,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
         createNotificationChannel();
 
         setContentView(R.layout.activity_main);
+        setupUI(findViewById(R.id.frameLayout));
         NBR_PAGE = ImageLegend.allPagesImages.size();
 
 
@@ -193,7 +204,8 @@ public class MainActivity extends AppCompatActivity {
                         setCustomView();
                     }
                 } else {
-                    Snackbar.make(snackBar, "Error User is not valid", Snackbar.LENGTH_SHORT).show();
+                    showInfo("Error User is not valid");
+                    //Snackbar.make(snackBar, "Error User is not valid", Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
@@ -213,6 +225,13 @@ public class MainActivity extends AppCompatActivity {
         textviewTestName = findViewById(R.id.textViewTestName);
         listViewTestDelete = findViewById(R.id.listViewTests);
         textViewPasswordSentenceResult=findViewById(R.id.passwordSentenceResult);
+        infoTextView=findViewById(R.id.infoTextView);
+        textResultTitle=findViewById(R.id.textResultTitle);
+
+
+
+        //load animation for infoTextView
+        initAnimationInfoView();
 
         listViewTestDelete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -228,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        WebView webView=findViewById(R.id.webView);
+        webView=findViewById(R.id.webView);
         webView.getSettings().setDomStorageEnabled(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setAllowContentAccess(true);
@@ -238,7 +257,8 @@ public class MainActivity extends AppCompatActivity {
         expProgressBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(snackBar, "Your rank :" + getUser().getRank() + " / " + numberOfUser, BaseTransientBottomBar.LENGTH_LONG).show();
+                showInfo("Your rank :" + getUser().getRank() + " / " + numberOfUser);
+                //Snackbar.make(snackBar, "Your rank :" + getUser().getRank() + " / " + numberOfUser, BaseTransientBottomBar.LENGTH_LONG).show();
             }
         });
 
@@ -274,7 +294,8 @@ public class MainActivity extends AppCompatActivity {
             }
             sequenceCompleted();
         } else {
-            Snackbar.make(snackBar, "Please choose a correct test name", Snackbar.LENGTH_SHORT).show();
+            showInfo("Please choose a correct test name");
+            //Snackbar.make(snackBar, "Please choose a correct test name", Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -283,7 +304,8 @@ public class MainActivity extends AppCompatActivity {
             printPageImage();
             getUser().register();
         } else {
-            Snackbar.make(snackBar, "Please choose a correct test name", Snackbar.LENGTH_SHORT).show();
+            showInfo("Please choose a correct test name");
+            //Snackbar.make(snackBar, "Please choose a correct test name", Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -292,7 +314,8 @@ public class MainActivity extends AppCompatActivity {
         boolean validName = true;
         if (!getUser().isValidNameForNewTest(editTextNametest.getText().toString())) {
             validName = false;
-            Snackbar.make(snackBar, "Error: please enter valid name for your Test", Snackbar.LENGTH_SHORT);
+            showInfo( "Error: please enter valid name for your Test");
+            //Snackbar.make(snackBar, "Error: please enter valid name for your Test", Snackbar.LENGTH_SHORT);
         }
 
         return validName;
@@ -309,14 +332,16 @@ public class MainActivity extends AppCompatActivity {
             String inputCharPassword = rememberPasswordView.getText().toString();
             String toPrint = constructStringXpWin(getUser().checkPassword(inputCharPassword, this));
 
-            Snackbar.make(snackBar, toPrint, Snackbar.LENGTH_SHORT).show();
+            showInfo(toPrint);
+            //Snackbar.make(snackBar, toPrint, Snackbar.LENGTH_SHORT).show();
 
             firestoreDB.collection(COLLECTION_USERS).document(getUser().getDocumentName())
                     .update("listTest", getUser().getListTest());
 
             printPageImage();
         } else {
-            Snackbar.make(snackBar, "Error User is not valid", Snackbar.LENGTH_SHORT).show();
+            showInfo("Error User is not valid");
+            //Snackbar.make(snackBar, "Error User is not valid", Snackbar.LENGTH_SHORT).show();
         }
 
     }
@@ -340,11 +365,16 @@ public class MainActivity extends AppCompatActivity {
                 toPrint = "Error: Same sequence as an other test.\nPlease change.";
             }
 
+            textResultTitle.setText("Your Password :");
+
 
             //we add a new test to his list of tests
         }
         //user clicked on the notification to test his memory
         else if (getUser().isTrying()) {
+            textResultTitle.setText("Correction :");
+
+
             getUser().setCurrentPasswordGenerated(getUser().getCurrentTest().getPasswordGenerated());
             toPrint = constructStringXpWin(getUser().checkPassword(this));
 
@@ -369,7 +399,8 @@ public class MainActivity extends AppCompatActivity {
         printResultSequence();
 
         //we check or save the password and go to the home page
-        Snackbar.make(snackBar, toPrint, Snackbar.LENGTH_LONG).show();
+        showInfo(toPrint);
+        //Snackbar.make(snackBar, toPrint, Snackbar.LENGTH_LONG).show();
         containerPagePictures.init();
     }
 
@@ -450,7 +481,7 @@ public class MainActivity extends AppCompatActivity {
             //the user is currently testing his memory
             getUser().doTry();
 
-            Snackbar.make(snackBar, "Sorry: can't find this test", Snackbar.LENGTH_SHORT);
+            //Snackbar.make(snackBar, "Sorry: can't find this test", Snackbar.LENGTH_SHORT);
 
         } else {
             goToHomePage(null);
@@ -651,5 +682,60 @@ public class MainActivity extends AppCompatActivity {
 
     public void goWebPageClick(View view) {
         containerView.printView(idWebPage);
+    }
+
+    public void showInfo(String infoToShow)
+    {
+        infoTextView.setVisibility(View.VISIBLE);
+        infoTextView.setText(infoToShow);
+        infoTextView.startAnimation(animation);
+    }
+
+    public void setupUI(View view) {
+
+        // Set up touch listener for non-text box views to hide keyboard.
+        if (!(view instanceof EditText)) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    hideSoftKeyboard();
+                    return false;
+                }
+            });
+        }
+
+        //If a layout container, iterate over children and seed recursion.
+        if (view instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                View innerView = ((ViewGroup) view).getChildAt(i);
+                setupUI(innerView);
+            }
+        }
+    }
+
+    public void hideSoftKeyboard() {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) this.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+
+        if(this.getCurrentFocus()!=null)
+        {
+            inputMethodManager.hideSoftInputFromWindow(
+                    this.getCurrentFocus().getWindowToken(), 0);
+        }
+    }
+
+    public void dismissClick(View view) {
+        view.getAnimation().restrictDuration(0);
+        initAnimationInfoView();
+    }
+
+    public void goToPrivacyPolicy(View view) {
+        webView.loadUrl("https://hftlapp.wixsite.com/website");
+    }
+
+    private void initAnimationInfoView()
+    {
+        animation=AnimationUtils.loadAnimation(this,R.anim.animationinfoview);
+        animation.setAnimationListener(new CustomAnimationListener(infoTextView));
     }
 }

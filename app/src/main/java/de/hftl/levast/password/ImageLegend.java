@@ -1,7 +1,4 @@
-package com.example.levast.password;
-
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
+package de.hftl.levast.password;
 
 import java.util.ArrayList;
 import java.util.Arrays;

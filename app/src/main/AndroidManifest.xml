@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.levast.password"
+    package="de.hftl.levast.password"
     >
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity" android:screenOrientation="portrait" >
+        <activity android:name="de.hftl.levast.password.MainActivity" android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,7 +19,7 @@
 
             </intent-filter>
         </activity>
-        <receiver android:name=".AlarmReceiver"  android:exported="true">
+        <receiver android:name="de.hftl.levast.password.AlarmReceiver"  android:exported="true">
         </receiver>
     </application>
 
