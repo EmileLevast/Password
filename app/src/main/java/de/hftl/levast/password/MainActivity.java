@@ -449,6 +449,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goToHomePage(View view) {
+        
         unlockViewByLevel.checkIfViewToUnlock(user.getLevel().getCurrentLevel());
         containerView.printView(idHomePage);
         updateExpBarUser();
